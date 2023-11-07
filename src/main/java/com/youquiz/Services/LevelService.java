@@ -15,7 +15,14 @@ public class LevelService {
     }
 
     public String createLevel(Level level) {
+        // Add validation later
         levelRepository.save(level);
         return "The level \"" + level.getTitle() + "\" have been created successfully.";
+    }
+
+    public String deleteLevel(Long id) {
+        // Check if the level exist
+        levelRepository.deleteById(id);
+        return "The level have been deleted successfully.";
     }
 }

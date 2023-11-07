@@ -39,6 +39,6 @@ public class Level {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "level")
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "level")
     private List<Question> questions;
 }
