@@ -15,6 +15,11 @@ public class LevelController {
         this.levelService = levelService;
     }
 
+    @GetMapping("/{id}")
+    public Level getLevel(@PathVariable("id") Long id) {
+        return levelService.getLevel(id);
+    }
+
     @PostMapping("/add")
     public String createLevel(@RequestBody Level level) {
         return levelService.createLevel(level);
