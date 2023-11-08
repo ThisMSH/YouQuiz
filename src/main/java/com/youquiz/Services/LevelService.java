@@ -19,13 +19,13 @@ public class LevelService {
     public String createLevel(Level level) {
         // Add validation later
         levelRepository.save(level);
-        return "The level \"" + level.getTitle() + "\" have been created successfully.";
+        return "The level \"" + level.getTitle() + "\" has been created successfully.";
     }
 
     public String deleteLevel(Long id) {
         // Check if the level exist
         levelRepository.deleteById(id);
-        return "The level have been deleted successfully.";
+        return "The level has been deleted successfully.";
     }
 
     public Level getLevel(Long id) {
