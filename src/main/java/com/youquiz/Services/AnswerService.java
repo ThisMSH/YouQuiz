@@ -27,4 +27,10 @@ public class AnswerService {
         Optional<Answer> answer = answerRepository.findById(id);
         return answer.orElseThrow();
     }
+
+    public String deleteAnswer(Long id) {
+        // Check if the answer exist
+        answerRepository.deleteById(id);
+        return "The answer has been deleted successfully.";
+    }
 }

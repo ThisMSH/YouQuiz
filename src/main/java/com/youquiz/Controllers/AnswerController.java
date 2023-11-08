@@ -24,4 +24,9 @@ public class AnswerController {
     public String createAnswer(@RequestBody Answer answer) {
         return answerService.createAnswer(answer);
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteAnswer(@PathVariable("id") Long id) {
+        return answerService.deleteAnswer(id);
+    }
 }
