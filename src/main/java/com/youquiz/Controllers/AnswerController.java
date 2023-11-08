@@ -3,10 +3,7 @@ package com.youquiz.Controllers;
 import com.youquiz.Entities.Answer;
 import com.youquiz.Services.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/answers")
@@ -16,6 +13,11 @@ public class AnswerController {
     @Autowired
     public AnswerController(AnswerService answerService) {
         this.answerService = answerService;
+    }
+
+    @GetMapping("/{id}")
+    public Answer getAnswer(@PathVariable("id") Long id) {
+        return answerService.getAnswer(id);
     }
 
     @PostMapping("/add")
