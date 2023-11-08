@@ -25,7 +25,7 @@ public class LevelController {
         return levelService.createLevel(level);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public String deleteLevel(@PathVariable("id") Long id) {
         return levelService.deleteLevel(id);
     }
