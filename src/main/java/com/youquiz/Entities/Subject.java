@@ -1,7 +1,9 @@
 package com.youquiz.Entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "subjects")
 public class Subject {
@@ -29,7 +33,7 @@ public class Subject {
     private List<Question> questions;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id", nullable = false)
+    @JoinColumn(name = "parent_id")
     private Subject parent;
 
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "parent")
