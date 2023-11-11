@@ -13,5 +13,5 @@ public class MediaDTO {
     private String title;
     private MediaType type;
     private MultipartFile file;
-    private Long question_id;
+    private Long questionId;
 }

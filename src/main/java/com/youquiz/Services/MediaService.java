@@ -8,12 +8,14 @@ import com.youquiz.Utils.FileStorageDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -69,8 +71,14 @@ public class MediaService implements FileStorageDAO {
     }
 
     @Override
-    public void deleteOne(Long id) {
+    public void deleteOne(String p) {
+        Path filePath = Path.of(p);
 
+        try {
+            FileSystemUtils.deleteRecursively(filePath);
+        } catch (IOException ex) {
+            throw new StorageException("Failed to delete the saved file: " + ex.getMessage());
+        }
     }
 
     @Override
@@ -82,5 +90,17 @@ public class MediaService implements FileStorageDAO {
         // Add validation later
         mediaRepository.save(media);
         return "Media has been uploaded successfully.";
+    }
+
+    public String deleteMedia(Long id) {
+        // Check if media exist
+        mediaRepository.deleteById(id);
+        return "Media has been deleted successfully.";
+    }
+
+    public Media getMedia(Long id) {
+        // Add better management for this method
+        Optional<Media> media = mediaRepository.findById(id);
+        return media.orElseThrow();
     }
 }

@@ -1,5 +1,7 @@
 package com.youquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.Enums.MediaType;
 import jakarta.persistence.*;
@@ -41,5 +43,6 @@ public class Media {
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
+    @JsonBackReference
     private Question question;
 }

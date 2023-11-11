@@ -1,8 +1,11 @@
 package com.youquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.youquiz.Enums.QuestionType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "questions")
 public class Question {
@@ -48,6 +53,7 @@ public class Question {
     private Subject subject;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    @JsonManagedReference
     private List<Media> medias;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")

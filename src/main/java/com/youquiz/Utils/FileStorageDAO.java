@@ -12,6 +12,6 @@ public interface FileStorageDAO {
     String saveFile(MultipartFile file);
     Resource loadOne(Long id);
     Stream<Path> loadAll();
-    void deleteOne(Long id);
+    void deleteOne(String p);
     void deleteByQuestion(Question question);
 }

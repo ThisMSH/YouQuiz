@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileSystemUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -27,6 +24,11 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
+    @GetMapping("/{id}")
+    public Media getMedia(@PathVariable("id") Long id) {
+        return mediaService.getMedia(id);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<String> createMedia(@ModelAttribute MediaDTO m) {
         String message;
@@ -37,7 +39,7 @@ public class MediaController {
             Question question = new Question();
 
             String url = mediaService.saveFile(m.getFile());
-            question.setId(m.getQuestion_id());
+            question.setId(m.getQuestionId());
 
             media.setTitle(m.getTitle());
             media.setType(m.getType());
@@ -62,4 +64,6 @@ public class MediaController {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
     }
+
+
 }
