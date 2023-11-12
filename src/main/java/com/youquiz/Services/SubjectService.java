@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SubjectService {
     private final SubjectRepository subjectRepository;
@@ -29,5 +31,11 @@ public class SubjectService {
 
         subjectRepository.save(subject);
         return "The subject \"" + subject.getTitle() + "\" has been created successfully.";
+    }
+
+    public Subject getSubject(Long id) {
+        // Add better management for this method
+        Optional<Subject> subject = subjectRepository.findById(id);
+        return subject.orElseThrow();
     }
 }

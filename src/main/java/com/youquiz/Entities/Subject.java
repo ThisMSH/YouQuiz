@@ -1,8 +1,6 @@
 package com.youquiz.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "subjects")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +38,8 @@ public class Subject {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @JsonBackReference
     private Subject parent;
 
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "parent")
-    @JsonManagedReference
     private List<Subject> children;
 }

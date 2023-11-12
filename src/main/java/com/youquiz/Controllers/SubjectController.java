@@ -4,10 +4,7 @@ import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
 import com.youquiz.Services.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/subjects")
@@ -17,6 +14,11 @@ public class SubjectController {
     @Autowired
     public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
+    }
+
+    @GetMapping("/{id}")
+    public Subject getSubject(@PathVariable("id") Long id) {
+        return subjectService.getSubject(id);
     }
 
     @PostMapping("/add")
