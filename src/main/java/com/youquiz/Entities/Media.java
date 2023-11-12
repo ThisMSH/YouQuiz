@@ -1,14 +1,21 @@
 package com.youquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.Enums.MediaType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "medias")
 public class Media {
@@ -26,13 +33,16 @@ public class Media {
     @Column(nullable = false)
     private MediaType type;
 
+    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @JsonProperty("updated-at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
+    @JsonBackReference
     private Question question;
 }

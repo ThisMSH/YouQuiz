@@ -29,7 +29,7 @@ public class Subject {
     private List<Question> questions;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id", nullable = false)
+    @JoinColumn(name = "parent_id")
     private Subject parent;
 
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "parent")
