@@ -35,7 +35,25 @@ public class SubjectService {
 
     public Subject getSubject(Long id) {
         // Add better management for this method
+//        Subject subject = subjectRepository.findById(id).orElseThrow(() -> new SubjectNotFoundException(id));
         Optional<Subject> subject = subjectRepository.findById(id);
         return subject.orElseThrow();
+    }
+
+    public String deleteSubject(Long id) {
+        // Check if subject exist
+        Subject subject = subjectRepository.findById(id).get();
+
+        for (Subject child : subject.getChildren()) {
+            if (subject.getParent() != null) {
+                child.setParent(subject.getParent());
+            } else {
+                child.setParent(null);
+            }
+        }
+
+        subjectRepository.saveAll(subject.getChildren());
+        subjectRepository.deleteById(id);
+        return "The subject has been deleted successfully.";
     }
 }

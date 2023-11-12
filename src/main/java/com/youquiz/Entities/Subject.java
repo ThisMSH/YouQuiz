@@ -33,7 +33,7 @@ public class Subject {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "subject")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subject")
     private List<Question> questions;
 
     @ManyToOne

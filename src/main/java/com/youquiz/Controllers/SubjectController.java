@@ -25,4 +25,9 @@ public class SubjectController {
     public String createSubject(@RequestBody SubjectDTO subject) {
         return subjectService.createSubject(subject);
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteSubject(@PathVariable("id") Long id) {
+        return subjectService.deleteSubject(id);
+    }
 }
