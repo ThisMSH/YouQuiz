@@ -1,5 +1,6 @@
 package com.youquiz.Controllers;
 
+import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
 import com.youquiz.Services.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class SubjectController {
     }
 
     @PostMapping("/add")
-    public String createSubject(@RequestBody Subject subject) {
+    public String createSubject(@RequestBody SubjectDTO subject) {
         return subjectService.createSubject(subject);
     }
 }

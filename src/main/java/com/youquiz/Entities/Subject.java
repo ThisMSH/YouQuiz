@@ -1,5 +1,8 @@
 package com.youquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,9 +26,11 @@ public class Subject {
     @Column(nullable = false)
     private String title;
 
+    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @JsonProperty("updated-at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
@@ -34,8 +39,10 @@ public class Subject {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @JsonBackReference
     private Subject parent;
 
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "parent")
+    @JsonManagedReference
     private List<Subject> children;
 }
