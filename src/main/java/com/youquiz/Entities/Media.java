@@ -1,8 +1,8 @@
 package com.youquiz.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.youquiz.Enums.MediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "medias")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +44,5 @@ public class Media {
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
-    @JsonBackReference
     private Question question;
 }
