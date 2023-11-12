@@ -4,10 +4,7 @@ import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
 import com.youquiz.Services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/questions")
@@ -19,8 +16,15 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
+    @GetMapping("/{id}")
+    public Question getQuestion(@PathVariable Long id) {
+        return questionService.getQuestion(id);
+    }
+
     @PostMapping("/add")
     public String createQuestion(@RequestBody QuestionDTO question) {
         return questionService.createQuestion(question);
     }
+
+
 }

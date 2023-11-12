@@ -24,4 +24,9 @@ public class QuestionService {
         questionRepository.save(question);
         return "Question has been created successfully.";
     }
+
+    public Question getQuestion(Long id) {
+        // Add better management for this method later
+        return questionRepository.findById(id).orElseThrow();
+    }
 }
