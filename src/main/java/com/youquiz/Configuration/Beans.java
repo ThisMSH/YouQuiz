@@ -14,6 +14,7 @@ import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,42 +33,39 @@ public class Beans {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        Converter<Long, Answer> answerConverter = new AbstractConverter<Long, Answer>() {
-            @Override
-            protected Answer convert(Long id) {
-                return answerRepository.findById(id).orElse(null);
-            }
-        };
+        modelMapper.typeMap(QuestionDTO.class, Question.class)
+            .addMappings(mapper -> {
+                mapper.map(
+                    QuestionDTO::getLevelId,
+                    (dest, id) -> dest.getLevel().setId((Long) id)
+                );
+                mapper.map(
+                    QuestionDTO::getSubjectId,
+                    (dest, id) -> dest.getSubject().setId((Long) id)
+                );
+            });
 
-        Converter<Long, Question> questionConverter = new AbstractConverter<Long, Question>() {
-            @Override
-            protected Question convert(Long id) {
-                return questionRepository.findById(id).orElse(null);
-            }
-        };
+        modelMapper.typeMap(SubjectDTO.class, Subject.class)
+            .addMappings(mapper -> {
+                mapper.map(
+                    SubjectDTO::getParentId,
+                    (dest, id) -> dest.getParent().setId((Long) id)
+                );
+            });
 
-        modelMapper.addMappings(new PropertyMap<QuestionDTO, Question>() {
-            @Override
-            protected void configure() {
-                skip(destination.getId());
-            }
-        });
-
-        modelMapper.addMappings(new PropertyMap<SubjectDTO, Subject>() {
-            @Override
-            protected void configure() {
-                skip(destination.getId());
-            }
-        });
-
-        modelMapper.addMappings(new PropertyMap<AnswerValidationDTO, AnswerValidation>() {
-            @Override
-            protected void configure() {
-                using(answerConverter).map(source.getAnswerId(), destination.getAnswer());
-                using(questionConverter).map(source.getQuestionId(), destination.getQuestion());
-            }
-        });
+        modelMapper.typeMap(AnswerValidationDTO.class, AnswerValidation.class)
+            .addMappings(mapper -> {
+                mapper.map(
+                    AnswerValidationDTO::getAnswerId,
+                    (dest, id) -> dest.getAnswer().setId((Long) id)
+                );
+                mapper.map(
+                    AnswerValidationDTO::getQuestionId,
+                    (dest, id) -> dest.getQuestion().setId((Long) id)
+                );
+            });
 
         return modelMapper;
     }
