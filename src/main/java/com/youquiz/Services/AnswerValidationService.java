@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AnswerValidationService {
     private final AnswerValidationRepository avRepository;
@@ -23,5 +25,9 @@ public class AnswerValidationService {
         AnswerValidation answer = modelMapper.map(a, AnswerValidation.class);
         avRepository.save(answer);
         return "Answer has been assigned successfully.";
+    }
+
+    public AnswerValidation getAssignedAnswer(Long questionId, Long answerId) {
+        return avRepository.findByQuestionIdAndAnswerId(questionId, answerId);
     }
 }
