@@ -2,6 +2,8 @@ package com.youquiz.Configuration;
 
 import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
+import com.youquiz.DTO.SubjectDTO;
+import com.youquiz.Entities.Subject;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +16,13 @@ public class Beans {
         ModelMapper modelMapper = new ModelMapper();
 
         modelMapper.addMappings(new PropertyMap<QuestionDTO, Question>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<SubjectDTO, Subject>() {
             @Override
             protected void configure() {
                 skip(destination.getId());
