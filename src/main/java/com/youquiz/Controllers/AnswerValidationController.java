@@ -25,4 +25,9 @@ public class AnswerValidationController {
     public String assignAnswerToQuestion(@RequestBody AnswerValidationDTO a) {
         return avService.assignAnswerToQuestion(a);
     }
+
+    @DeleteMapping("/{questionId}-{answerId}")
+    public String deleteAnswerValidation(@PathVariable Long questionId, @PathVariable Long answerId) {
+        return avService.deleteAnswerValidation(questionId, answerId);
+    }
 }

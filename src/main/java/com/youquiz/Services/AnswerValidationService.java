@@ -6,6 +6,7 @@ import com.youquiz.Repositories.AnswerValidationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -29,5 +30,12 @@ public class AnswerValidationService {
 
     public AnswerValidation getAssignedAnswer(Long questionId, Long answerId) {
         return avRepository.findByQuestionIdAndAnswerId(questionId, answerId);
+    }
+
+    @Transactional
+    public String deleteAnswerValidation(Long questionId, Long answerId) {
+        // Check if there is an assignment
+        avRepository.deleteByQuestionIdAndAnswerId(questionId, answerId);
+        return "Answer/Question assignment has been deleted successfully.";
     }
 }
