@@ -1,4 +1,7 @@
 package com.youquiz.Repositories;
 
-public interface SubjectRepository {
+import com.youquiz.Entities.Subject;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SubjectRepository extends JpaRepository<Subject, Long> {
 }

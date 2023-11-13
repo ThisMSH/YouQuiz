@@ -1,8 +1,6 @@
 package com.youquiz.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import com.youquiz.Enums.MediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
