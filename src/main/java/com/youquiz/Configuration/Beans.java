@@ -1,5 +1,7 @@
 package com.youquiz.Configuration;
 
+import com.youquiz.DTO.QuestionDTO;
+import com.youquiz.Entities.Question;
 import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
 import org.modelmapper.ModelMapper;
@@ -12,6 +14,13 @@ public class Beans {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper.addMappings(new PropertyMap<QuestionDTO, Question>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+            }
+        });
 
         modelMapper.addMappings(new PropertyMap<SubjectDTO, Subject>() {
             @Override
