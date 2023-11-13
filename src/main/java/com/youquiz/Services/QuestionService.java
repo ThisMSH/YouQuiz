@@ -29,4 +29,10 @@ public class QuestionService {
         // Add better management for this method later
         return questionRepository.findById(id).orElseThrow();
     }
+
+    public String deleteQuestion(Long id) {
+        // Check if Question exists
+        questionRepository.deleteById(id);
+        return "Question has been deleted successfully.";
+    }
 }
