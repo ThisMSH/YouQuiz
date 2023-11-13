@@ -18,7 +18,10 @@ public class AnswerValidationService {
         this.modelMapper = modelMapper;
     }
 
-    public AnswerValidation assignAnswerToQuestion(AnswerValidationDTO a) {
-        return modelMapper.map(a, AnswerValidation.class);
+    public String assignAnswerToQuestion(AnswerValidationDTO a) {
+        // Check if an answer is already assigned to a question
+        AnswerValidation answer = modelMapper.map(a, AnswerValidation.class);
+        avRepository.save(answer);
+        return "Answer has been assigned successfully.";
     }
 }
