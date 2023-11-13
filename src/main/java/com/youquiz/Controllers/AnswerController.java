@@ -21,12 +21,12 @@ public class AnswerController {
     }
 
     @PostMapping("/add")
-    public String createAnswer(@RequestBody Answer answer) {
+    public Answer createAnswer(@RequestBody Answer answer) {
         return answerService.createAnswer(answer);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable("id") Long id) {
+    public Integer deleteAnswer(@PathVariable("id") Long id) {
         return answerService.deleteAnswer(id);
     }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Answer> findByAnswer(String answer);
+    Boolean existsByAnswer(String answer);
 }
