@@ -1,7 +1,6 @@
 package com.youquiz.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import com.youquiz.Enums.MediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,13 +32,16 @@ public class Media {
     @Column(nullable = false)
     private MediaType type;
 
+    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @JsonProperty("updated-at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
+    @JsonBackReference
     private Question question;
 }
