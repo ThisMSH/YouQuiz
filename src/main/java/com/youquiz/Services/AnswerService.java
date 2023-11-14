@@ -19,7 +19,7 @@ public class AnswerService {
     }
 
     public Answer createAnswer(Answer answer) {
-        if (answerRepository.existsByAnswer(answer.getAnswer())) {
+        if (answerRepository.existsByAnswerIgnoreCase(answer.getAnswer())) {
             throw new ResourceAlreadyExists("This answer already exists.");
         }
 
