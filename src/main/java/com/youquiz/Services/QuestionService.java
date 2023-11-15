@@ -2,10 +2,13 @@ package com.youquiz.Services;
 
 import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
+import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.QuestionRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class QuestionService {
@@ -18,21 +21,25 @@ public class QuestionService {
         this.modelMapper = modelMapper;
     }
 
-    public String createQuestion(QuestionDTO q) {
-        // Add validation later
+    public Question createQuestion(QuestionDTO q) {
         Question question = modelMapper.map(q, Question.class);
-        questionRepository.save(question);
-        return "Question has been created successfully.";
+
+        return questionRepository.save(question);
     }
 
     public Question getQuestion(Long id) {
-        // Add better management for this method later
-        return questionRepository.findById(id).orElseThrow();
+        Optional<Question> question = questionRepository.findById(id);
+
+        return question.orElseThrow(() -> new ResourceNotFoundException("Question not found."));
     }
 
-    public String deleteQuestion(Long id) {
-        // Check if Question exists
+    public Integer deleteQuestion(Long id) {
+        if (!questionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Question not found.");
+        }
+
         questionRepository.deleteById(id);
-        return "Question has been deleted successfully.";
+
+        return 1;
     }
 }
