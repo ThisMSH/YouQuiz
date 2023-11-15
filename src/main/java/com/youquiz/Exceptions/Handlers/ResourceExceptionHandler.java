@@ -1,6 +1,7 @@
 package com.youquiz.Exceptions.Handlers;
 
 import com.youquiz.Exceptions.ResourceAlreadyExists;
+import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Utils.ResponseHandler;
 import org.springframework.http.HttpStatus;
@@ -18,5 +19,10 @@ public class ResourceExceptionHandler {
     @ExceptionHandler(value = {ResourceAlreadyExists.class})
     public ResponseEntity<Object> handleResourceAlreadyExistsException(ResourceAlreadyExists e) {
         return ResponseHandler.exception(e, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = {ResourceBadRequest.class})
+    public ResponseEntity<Object> handleResourceBadRequestException(ResourceBadRequest e) {
+        return ResponseHandler.exception(e, HttpStatus.BAD_REQUEST);
     }
 }

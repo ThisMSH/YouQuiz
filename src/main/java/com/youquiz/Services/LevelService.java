@@ -2,6 +2,7 @@ package com.youquiz.Services;
 
 import com.youquiz.Entities.Level;
 import com.youquiz.Exceptions.ResourceAlreadyExists;
+import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.LevelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,10 @@ public class LevelService {
     public Level createLevel(Level level) {
         if (levelRepository.existsByTitleIgnoreCase(level.getTitle())) {
             throw new ResourceAlreadyExists("The level \"" + level.getTitle() + "\" already exists.");
+        }
+
+        if (level.getMaxPoints() < level.getMinPoints()) {
+            throw new ResourceBadRequest("The minimum points can't be bigger than the maximum points.");
         }
 
         return levelRepository.save(level);
