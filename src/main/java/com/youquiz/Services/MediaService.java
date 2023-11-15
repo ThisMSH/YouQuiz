@@ -1,14 +1,19 @@
 package com.youquiz.Services;
 
+import com.youquiz.DTO.MediaDTO;
 import com.youquiz.Entities.Media;
 import com.youquiz.Entities.Question;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Exceptions.StorageException;
+import com.youquiz.Exceptions.StorageExpectationFailed;
 import com.youquiz.Exceptions.StorageUnprocessableException;
 import com.youquiz.Repositories.MediaRepository;
 import com.youquiz.DAO.FileStorageDAO;
+import com.youquiz.Utils.ResponseHandler;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +29,13 @@ import java.util.stream.Stream;
 @Service
 public class MediaService implements FileStorageDAO {
     private final MediaRepository mediaRepository;
+    private final ModelMapper modelMapper;
     private final Path path = Paths.get("storage");
 
     @Autowired
-    public MediaService(MediaRepository mediaRepository) {
+    public MediaService(MediaRepository mediaRepository, ModelMapper modelMapper) {
         this.mediaRepository = mediaRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -88,8 +95,29 @@ public class MediaService implements FileStorageDAO {
 
     }
 
-    public Media createMedia(Media media) {
-        return mediaRepository.save(media);
+    public Media createMedia(MediaDTO m) {
+        Path filePath = null;
+
+        try {
+            String url = this.saveFile(m.getFile());
+
+            Media media = modelMapper.map(m, Media.class);
+
+            media.setUrl(url);
+
+            filePath = Path.of(url);
+
+            return mediaRepository.save(media);
+        } catch (Exception e) {
+            if (filePath != null) {
+                try {
+                    FileSystemUtils.deleteRecursively(filePath);
+                } catch (IOException ex) {
+                    throw new StorageException("Could not save the media: " + ex.getMessage(), ex);
+                }
+            }
+            throw new StorageExpectationFailed("Could not save the media: " + e.getMessage(), e);
+        }
     }
 
     public Media getMedia(Long id) {

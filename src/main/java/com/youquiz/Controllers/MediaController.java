@@ -7,6 +7,7 @@ import com.youquiz.Exceptions.StorageException;
 import com.youquiz.Exceptions.StorageExpectationFailed;
 import com.youquiz.Services.MediaService;
 import com.youquiz.Utils.ResponseHandler;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,42 +40,13 @@ public class MediaController {
 
     @PostMapping("/add")
     public ResponseEntity<Object> createMedia(@ModelAttribute MediaDTO m) {
-        Path filePath = null;
+        Media media = mediaService.createMedia(m);
 
-        try {
-            Media media = new Media();
-            Question question = new Question();
-
-            String url = mediaService.saveFile(m.getFile());
-            question.setId(m.getQuestionId());
-
-            media.setTitle(m.getTitle());
-            media.setType(m.getType());
-            media.setUrl(url);
-            media.setQuestion(question);
-
-            filePath = Path.of(url);
-
-            media = mediaService.createMedia(media);
-
-            return ResponseHandler.success(
-                "The media has been created successfully.",
-                HttpStatus.CREATED,
-                media
-            );
-        } catch (Exception e) {
-            if (filePath != null) {
-                try {
-                    FileSystemUtils.deleteRecursively(filePath);
-                } catch (IOException ex) {
-                    RuntimeException exc = new StorageException("Could not save the media: " + ex.getMessage(), ex);
-                    return ResponseHandler.exception(exc, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-
-            RuntimeException exception = new StorageExpectationFailed("Could not save the media: " + e.getMessage(), e);
-            return ResponseHandler.exception(exception, HttpStatus.EXPECTATION_FAILED);
-        }
+        return ResponseHandler.success(
+            "The media has been created successfully.",
+            HttpStatus.CREATED,
+            media
+        );
     }
 
     @DeleteMapping("/{id}")

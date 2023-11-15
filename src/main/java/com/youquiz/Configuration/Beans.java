@@ -1,12 +1,10 @@
 package com.youquiz.Configuration;
 
 import com.youquiz.DTO.AnswerValidationDTO;
+import com.youquiz.DTO.MediaDTO;
 import com.youquiz.DTO.QuestionDTO;
-import com.youquiz.Entities.Answer;
-import com.youquiz.Entities.AnswerValidation;
-import com.youquiz.Entities.Question;
+import com.youquiz.Entities.*;
 import com.youquiz.DTO.SubjectDTO;
-import com.youquiz.Entities.Subject;
 import com.youquiz.Repositories.AnswerRepository;
 import com.youquiz.Repositories.QuestionRepository;
 import org.modelmapper.AbstractConverter;
@@ -63,6 +61,14 @@ public class Beans {
                 );
                 mapper.map(
                     AnswerValidationDTO::getQuestionId,
+                    (dest, id) -> dest.getQuestion().setId((Long) id)
+                );
+            });
+
+        modelMapper.typeMap(MediaDTO.class, Media.class)
+            .addMappings(mapper -> {
+                mapper.map(
+                    MediaDTO::getQuestionId,
                     (dest, id) -> dest.getQuestion().setId((Long) id)
                 );
             });
