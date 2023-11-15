@@ -102,7 +102,6 @@ public class MediaService implements FileStorageDAO {
             String url = this.saveFile(m.getFile());
 
             Media media = modelMapper.map(m, Media.class);
-
             media.setUrl(url);
 
             filePath = Path.of(url);
@@ -113,7 +112,7 @@ public class MediaService implements FileStorageDAO {
                 try {
                     FileSystemUtils.deleteRecursively(filePath);
                 } catch (IOException ex) {
-                    throw new StorageException("Could not save the media: " + ex.getMessage(), ex);
+                    throw new StorageException("Could not delete the save media after encountering an error: " + ex.getMessage(), ex);
                 }
             }
             throw new StorageExpectationFailed("Could not save the media: " + e.getMessage(), e);
