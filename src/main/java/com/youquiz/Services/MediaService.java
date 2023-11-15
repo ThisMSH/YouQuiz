@@ -2,9 +2,11 @@ package com.youquiz.Services;
 
 import com.youquiz.Entities.Media;
 import com.youquiz.Entities.Question;
+import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Exceptions.StorageException;
+import com.youquiz.Exceptions.StorageUnprocessableException;
 import com.youquiz.Repositories.MediaRepository;
-import com.youquiz.Utils.FileStorageDAO;
+import com.youquiz.DAO.FileStorageDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,7 @@ public class MediaService implements FileStorageDAO {
     public String saveFile(MultipartFile file) {
         try {
             if (file.isEmpty()) {
-                throw new StorageException("Failed to store empty file.");
+                throw new StorageUnprocessableException("Failed to store empty file.");
             }
 
             String uuid = UUID.randomUUID().toString();
@@ -86,21 +88,25 @@ public class MediaService implements FileStorageDAO {
 
     }
 
-    public String createMedia(Media media) {
-        // Add validation later
-        mediaRepository.save(media);
-        return "Media has been uploaded successfully.";
-    }
-
-    public String deleteMedia(Long id) {
-        // Check if media exist
-        mediaRepository.deleteById(id);
-        return "Media has been deleted successfully.";
+    public Media createMedia(Media media) {
+        return mediaRepository.save(media);
     }
 
     public Media getMedia(Long id) {
-        // Add better management for this method
         Optional<Media> media = mediaRepository.findById(id);
-        return media.orElseThrow();
+
+        return media.orElseThrow(() -> new ResourceNotFoundException("Media not found."));
+    }
+
+    public Integer deleteMedia(Long id) {
+        if (!mediaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Media not found");
+        }
+
+        Media media = this.getMedia(id);
+        this.deleteOne(media.getUrl());
+        mediaRepository.deleteById(id);
+
+        return 1;
     }
 }

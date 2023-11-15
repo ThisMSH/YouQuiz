@@ -37,7 +37,7 @@ public class LevelService {
         if (!levelRepository.existsById(id)) {
             throw new ResourceNotFoundException("Level not found.");
         }
-        
+
         levelRepository.deleteById(id);
 
         return 1;
