@@ -2,6 +2,7 @@ package com.youquiz.Services;
 
 import com.youquiz.DTO.AnswerValidationDTO;
 import com.youquiz.Entities.AnswerValidation;
+import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.AnswerValidationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +22,30 @@ public class AnswerValidationService {
         this.modelMapper = modelMapper;
     }
 
-    public String assignAnswerToQuestion(AnswerValidationDTO a) {
-        // Check if an answer is already assigned to a question
+    public AnswerValidation assignAnswerToQuestion(AnswerValidationDTO a) {
+        if (avRepository.existsByQuestionIdAndAnswerId(a.getQuestionId(), a.getAnswerId())) {
+            throw new ResourceNotFoundException("The answer is already assigned to this question.");
+        }
+
         AnswerValidation answer = modelMapper.map(a, AnswerValidation.class);
-        avRepository.save(answer);
-        return "Answer has been assigned successfully.";
+
+        return avRepository.save(answer);
     }
 
     public AnswerValidation getAssignedAnswer(Long questionId, Long answerId) {
-        return avRepository.findByQuestionIdAndAnswerId(questionId, answerId);
+        Optional<AnswerValidation> av = avRepository.findByQuestionIdAndAnswerId(questionId, answerId);
+
+        return av.orElseThrow(() -> new ResourceNotFoundException("The association between the answer and question was not found."));
     }
 
     @Transactional
-    public String deleteAnswerValidation(Long questionId, Long answerId) {
-        // Check if there is an assignment
+    public Integer deleteAnswerValidation(Long questionId, Long answerId) {
+        if (!avRepository.existsByQuestionIdAndAnswerId(questionId, answerId)) {
+            throw new ResourceNotFoundException("No association found between the provided answer and question.");
+        }
+
         avRepository.deleteByQuestionIdAndAnswerId(questionId, answerId);
-        return "Answer/Question assignment has been deleted successfully.";
+
+        return 1;
     }
 }
