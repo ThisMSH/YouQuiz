@@ -19,15 +19,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Beans {
-    private final AnswerRepository answerRepository;
-    private final QuestionRepository questionRepository;
-
-    @Autowired
-    public Beans(AnswerRepository answerRepository, QuestionRepository questionRepository) {
-        this.answerRepository = answerRepository;
-        this.questionRepository = questionRepository;
-    }
-
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
