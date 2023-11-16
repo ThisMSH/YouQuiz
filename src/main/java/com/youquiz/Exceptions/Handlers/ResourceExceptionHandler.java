@@ -3,6 +3,7 @@ package com.youquiz.Exceptions.Handlers;
 import com.youquiz.Exceptions.ResourceAlreadyExists;
 import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
+import com.youquiz.Exceptions.ResourceUnprocessableException;
 import com.youquiz.Utils.ResponseHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,10 @@ public class ResourceExceptionHandler {
     @ExceptionHandler(value = {ResourceBadRequest.class})
     public ResponseEntity<Object> handleResourceBadRequestException(ResourceBadRequest e) {
         return ResponseHandler.exception(e, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {ResourceUnprocessableException.class})
+    public ResponseEntity<Object> handleResourceUnprocessableException(ResourceUnprocessableException e) {
+        return ResponseHandler.exception(e, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }
