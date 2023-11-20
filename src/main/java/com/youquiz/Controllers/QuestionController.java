@@ -31,6 +31,23 @@ public class QuestionController {
         );
     }
 
+    @GetMapping
+    public ResponseEntity<Object> getAllQuestions(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "24") int size,
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "ASC") String sortOrder
+    ) {
+        var questions = questionService.getAllQuestions(page - 1, size, sortBy, sortOrder);
+
+        return ResponseHandler.success(
+            "The questions of page " + page + " have been fetched successfully."
+            + "Size = " + size + ", Sort by: " + sortBy + ", Order: " + sortOrder,
+            HttpStatus.OK,
+            questions
+        );
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Object> createQuestion(@RequestBody @Valid QuestionDTO question) {
         Question createdQuestion = questionService.createQuestion(question);

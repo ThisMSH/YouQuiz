@@ -6,6 +6,10 @@ import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.QuestionRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -41,5 +45,21 @@ public class QuestionService {
         questionRepository.deleteById(id);
 
         return 1;
+    }
+
+    public Page<Question> getAllQuestions(int page, int size, String sortBy, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name())
+            ? Sort.by(sortBy).ascending()
+            : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Question> questions = questionRepository.findAll(pageable);
+
+        if (!questions.hasContent()) {
+            throw new ResourceNotFoundException("No questions found for the page " + page);
+        }
+
+        return questions;
     }
 }
