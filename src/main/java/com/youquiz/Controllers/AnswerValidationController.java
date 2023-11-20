@@ -4,6 +4,7 @@ import com.youquiz.DTO.AnswerValidationDTO;
 import com.youquiz.Entities.AnswerValidation;
 import com.youquiz.Services.AnswerValidationService;
 import com.youquiz.Utils.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class AnswerValidationController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> assignAnswerToQuestion(@RequestBody AnswerValidationDTO a) {
+    public ResponseEntity<Object> assignAnswerToQuestion(@RequestBody @Valid AnswerValidationDTO a) {
         AnswerValidation av = avService.assignAnswerToQuestion(a);
 
         return ResponseHandler.success(

@@ -33,13 +33,15 @@ public class Level {
     private String description;
 
     @NotNull(message = "Max points is required.")
-    @DecimalMax(value = "50.0", message = "Max points must be lower than 50.")
+    @DecimalMin(value = "1", message = "Maximum points cannot be lower than 1.")
+    @DecimalMax(value = "50.0", message = "Maximum points must be higher than 50.")
     @JsonProperty("max-points")
     @Column(nullable = false)
     private double maxPoints;
 
     @NotNull(message = "Min points is required.")
-    @DecimalMin(value = "10.0", message = "The points cannot be higher than 10.")
+    @DecimalMin(value = "1", message = "Minimum points cannot be lower than 1.")
+    @DecimalMax(value = "50.0", message = "Minimum points must be higher than 50.")
     @JsonProperty("min-points")
     @Column(nullable = false)
     private double minPoints;

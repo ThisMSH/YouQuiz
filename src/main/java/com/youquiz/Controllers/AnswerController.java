@@ -3,6 +3,7 @@ package com.youquiz.Controllers;
 import com.youquiz.Entities.Answer;
 import com.youquiz.Services.AnswerService;
 import com.youquiz.Utils.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class AnswerController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createAnswer(@RequestBody Answer answer) {
+    public ResponseEntity<Object> createAnswer(@RequestBody @Valid Answer answer) {
         Answer createdAnswer = answerService.createAnswer(answer);
 
         return ResponseHandler.success(

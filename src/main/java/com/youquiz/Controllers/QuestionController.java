@@ -4,6 +4,7 @@ import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
 import com.youquiz.Services.QuestionService;
 import com.youquiz.Utils.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class QuestionController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createQuestion(@RequestBody QuestionDTO question) {
+    public ResponseEntity<Object> createQuestion(@RequestBody @Valid QuestionDTO question) {
         Question createdQuestion = questionService.createQuestion(question);
 
         return ResponseHandler.success(

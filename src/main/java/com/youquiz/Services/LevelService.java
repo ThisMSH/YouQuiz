@@ -25,8 +25,8 @@ public class LevelService {
             throw new ResourceAlreadyExists("The level \"" + level.getTitle() + "\" already exists.");
         }
 
-        if (level.getMaxPoints() < level.getMinPoints()) {
-            throw new ResourceBadRequest("The minimum points can't be bigger than the maximum points.");
+        if (level.getMaxPoints() <= level.getMinPoints()) {
+            throw new ResourceBadRequest("Minimum points cannot be higher or equal to maximum points.");
         }
 
         return levelRepository.save(level);

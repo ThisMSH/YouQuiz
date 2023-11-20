@@ -17,7 +17,7 @@ public class MediaDTO {
     @Size(max = 255, message = "The title cannot exceed 255 characters.")
     private String title;
 
-    @NotBlank(message = "Media type is required.")
+    @NotNull(message = "Media type is required.")
     private MediaType type;
 
     @NotNull(message = "Media is required.")

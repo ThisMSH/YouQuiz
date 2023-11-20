@@ -4,6 +4,7 @@ import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
 import com.youquiz.Services.SubjectService;
 import com.youquiz.Utils.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class SubjectController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createSubject(@RequestBody SubjectDTO subject) {
+    public ResponseEntity<Object> createSubject(@RequestBody @Valid SubjectDTO subject) {
         Subject createdSubject = subjectService.createSubject(subject);
 
         return ResponseHandler.success(

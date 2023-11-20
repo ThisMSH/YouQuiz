@@ -7,6 +7,7 @@ import com.youquiz.Exceptions.StorageException;
 import com.youquiz.Exceptions.StorageExpectationFailed;
 import com.youquiz.Services.MediaService;
 import com.youquiz.Utils.ResponseHandler;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class MediaController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createMedia(@ModelAttribute MediaDTO m) {
+    public ResponseEntity<Object> createMedia(@ModelAttribute @Valid MediaDTO m) {
         Media media = mediaService.createMedia(m);
 
         return ResponseHandler.success(

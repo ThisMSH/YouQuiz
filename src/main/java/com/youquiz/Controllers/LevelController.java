@@ -3,6 +3,7 @@ package com.youquiz.Controllers;
 import com.youquiz.Entities.Level;
 import com.youquiz.Services.LevelService;
 import com.youquiz.Utils.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class LevelController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createLevel(@RequestBody Level level) {
+    public ResponseEntity<Object> createLevel(@RequestBody @Valid Level level) {
         Level createdLevel = levelService.createLevel(level);
 
         return ResponseHandler.success(

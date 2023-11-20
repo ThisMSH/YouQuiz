@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.youquiz.Enums.MediaType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,7 @@ public class Media {
     @Column(nullable = false)
     private String url;
 
-    @NotBlank(message = "Media type is required.")
+    @NotNull(message = "Media type is required.")
     @Enumerated
     @Column(nullable = false)
     private MediaType type;
