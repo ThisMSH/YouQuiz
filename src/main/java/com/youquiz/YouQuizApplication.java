@@ -1,6 +1,6 @@
 package com.youquiz;
 
-import com.youquiz.Utils.FileStorageDAO;
+import com.youquiz.DAO.FileStorageDAO;
 import jakarta.annotation.Resource;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +16,7 @@ public class YouQuizApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         storageDAO.init();
     }
 }

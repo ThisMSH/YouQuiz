@@ -2,7 +2,11 @@ package com.youquiz.Controllers;
 
 import com.youquiz.Entities.Answer;
 import com.youquiz.Services.AnswerService;
+import com.youquiz.Utils.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,17 +20,35 @@ public class AnswerController {
     }
 
     @GetMapping("/{id}")
-    public Answer getAnswer(@PathVariable("id") Long id) {
-        return answerService.getAnswer(id);
+    public ResponseEntity<Object> getAnswer(@PathVariable("id") Long id) {
+        Answer answer = answerService.getAnswer(id);
+
+        return ResponseHandler.success(
+            "The answer has been fetched successfully.",
+            HttpStatus.OK,
+            answer
+        );
     }
 
     @PostMapping("/add")
-    public String createAnswer(@RequestBody Answer answer) {
-        return answerService.createAnswer(answer);
+    public ResponseEntity<Object> createAnswer(@RequestBody @Valid Answer answer) {
+        Answer createdAnswer = answerService.createAnswer(answer);
+
+        return ResponseHandler.success(
+            "The answer has been created successfully.",
+            HttpStatus.CREATED,
+            createdAnswer
+        );
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable("id") Long id) {
-        return answerService.deleteAnswer(id);
+    public ResponseEntity<Object> deleteAnswer(@PathVariable("id") Long id) {
+        int del = answerService.deleteAnswer(id);
+
+        return ResponseHandler.success(
+            "The answer has been deleted successfully.",
+            HttpStatus.OK,
+            del
+        );
     }
 }

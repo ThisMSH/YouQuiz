@@ -1,9 +1,12 @@
 package com.youquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,7 +15,6 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "answer_validations")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -21,9 +23,13 @@ public class AnswerValidation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Points is required.")
+    @DecimalMin(value = "0.0", message = "The points cannot be lower than 0.")
+    @DecimalMax(value = "10.0", message = "The points cannot be higher than 10.")
     @Column(nullable = false)
     private double points;
 
+    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 

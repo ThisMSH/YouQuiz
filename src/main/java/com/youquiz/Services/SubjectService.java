@@ -2,6 +2,7 @@ package com.youquiz.Services;
 
 import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
+import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.SubjectRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,28 +21,23 @@ public class SubjectService {
         this.modelMapper = modelMapper;
     }
 
-    public String createSubject(SubjectDTO s) {
-        // Add validation later
+    public Subject createSubject(SubjectDTO s) {
         Subject subject = modelMapper.map(s, Subject.class);
 
-        if (s.getParentId() != null) {
-            Subject parent = subjectRepository.findById(s.getParentId()).get();
-            subject.setParent(parent);
-        }
-
-        subjectRepository.save(subject);
-        return "The subject \"" + subject.getTitle() + "\" has been created successfully.";
+        return subjectRepository.save(subject);
     }
 
     public Subject getSubject(Long id) {
-        // Add better management for this method
-//        Subject subject = subjectRepository.findById(id).orElseThrow(() -> new SubjectNotFoundException(id));
         Optional<Subject> subject = subjectRepository.findById(id);
-        return subject.orElseThrow();
+
+        return subject.orElseThrow(() -> new ResourceNotFoundException("Subject not found."));
     }
 
-    public String deleteSubject(Long id) {
-        // Check if subject exist
+    public Integer deleteSubject(Long id) {
+        if (!subjectRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Subject not found.");
+        }
+
         Subject subject = subjectRepository.findById(id).get();
 
         for (Subject child : subject.getChildren()) {
@@ -54,6 +50,7 @@ public class SubjectService {
 
         subjectRepository.saveAll(subject.getChildren());
         subjectRepository.deleteById(id);
-        return "The subject has been deleted successfully.";
+
+        return 1;
     }
 }

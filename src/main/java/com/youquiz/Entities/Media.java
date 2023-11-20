@@ -3,7 +3,9 @@ package com.youquiz.Entities;
 import com.fasterxml.jackson.annotation.*;
 import com.youquiz.Enums.MediaType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,7 +15,6 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "medias")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -22,12 +23,15 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required.")
+    @Size(max = 255, message = "The title cannot exceed 255 characters.")
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String url;
 
+    @NotNull(message = "Media type is required.")
     @Enumerated
     @Column(nullable = false)
     private MediaType type;

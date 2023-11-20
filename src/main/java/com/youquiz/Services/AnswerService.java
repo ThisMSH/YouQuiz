@@ -1,6 +1,8 @@
 package com.youquiz.Services;
 
 import com.youquiz.Entities.Answer;
+import com.youquiz.Exceptions.ResourceAlreadyExists;
+import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.AnswerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,21 +18,27 @@ public class AnswerService {
         this.answerRepository = answerRepository;
     }
 
-    public String createAnswer(Answer answer) {
-        // Add validation later
-        answerRepository.save(answer);
-        return "The answer \"" + answer.getAnswer() + "\" has been created successfully.";
+    public Answer createAnswer(Answer answer) {
+        if (answerRepository.existsByAnswerIgnoreCase(answer.getAnswer())) {
+            throw new ResourceAlreadyExists("This answer already exists.");
+        }
+
+        return answerRepository.save(answer);
     }
 
     public Answer getAnswer(Long id) {
-        // Add better management for this method
         Optional<Answer> answer = answerRepository.findById(id);
-        return answer.orElseThrow();
+
+        return answer.orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
     }
 
-    public String deleteAnswer(Long id) {
-        // Check if the answer exist
+    public Integer deleteAnswer(Long id) {
+        if (!answerRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Answer not found.");
+        }
+
         answerRepository.deleteById(id);
-        return "The answer has been deleted successfully.";
+
+        return 1;
     }
 }
