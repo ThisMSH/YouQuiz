@@ -1,7 +1,9 @@
 package com.youquiz.Services;
 
+import com.youquiz.DTO.Alt.QuestionAltDTO;
 import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
+import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.QuestionRepository;
 import org.modelmapper.ModelMapper;
@@ -47,19 +49,30 @@ public class QuestionService {
         return 1;
     }
 
-    public Page<Question> getAllQuestions(int page, int size, String sortBy, String sortOrder) {
+    public Page<QuestionAltDTO> getAllQuestions(String question, int page, int size, String sortBy, String sortOrder) {
+        if (!sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) && !sortOrder.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+            throw new ResourceBadRequest("Please make sure to choose either ascending or descending order.");
+        }
         Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name())
             ? Sort.by(sortBy).ascending()
             : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Question> questions = questionRepository.findAll(pageable);
+        Page<Question> questions = questionRepository.findAllByQuestionLikeIgnoreCase("%" + question + "%", pageable);
+
+        Page<QuestionAltDTO> questionDTOs = questions.map(q -> modelMapper.map(q, QuestionAltDTO.class));
 
         if (!questions.hasContent()) {
-            throw new ResourceNotFoundException("No questions found for the page " + page);
+            String message = "";
+            if (question.isBlank()) {
+                message = "No questions found in page " + (page + 1) + ".";
+            } else {
+                message = "No question matching \"" + question + "\" found.";
+            }
+            throw new ResourceNotFoundException(message);
         }
 
-        return questions;
+        return questionDTOs;
     }
 }

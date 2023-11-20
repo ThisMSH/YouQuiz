@@ -26,7 +26,7 @@ public class QuestionDTO {
     @JsonProperty("correct-answers-count")
     private byte correctAnswersCount = 0;
 
-    @NotBlank(message = "Question type is required.")
+    @NotNull(message = "Question type is required.")
     private QuestionType type;
 
     @NotNull(message = "You must assign a level to this question.")
