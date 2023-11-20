@@ -23,12 +23,12 @@ public class Level {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "The title is required.")
+    @NotBlank(message = "Title is required.")
     @Size(min = 2, max = 50, message = "The title must be between 2 and 50 characters.")
     @Column(nullable = false)
     private String title;
 
-    @Size(max = 500, message = "The description must not exceed 500 characters.")
+    @Size(max = 500, message = "Description must not exceed 500 characters.")
     @Column(length = 500)
     private String description;
 

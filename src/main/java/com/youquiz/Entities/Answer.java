@@ -25,8 +25,8 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "The answer is required.")
-    @Size(min = 5, max = 255, message = "The answer must be between 5 and 255 characters.")
+    @NotBlank(message = "Answer is required.")
+    @Size(max = 255, message = "Answer cannot exceed 255 characters.")
     @Column(nullable = false)
     private String answer;
 

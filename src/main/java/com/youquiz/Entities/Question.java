@@ -1,9 +1,13 @@
 package com.youquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.youquiz.Enums.QuestionType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,25 +26,33 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Question is required.")
+    @Size(max = 255, message = "Question cannot exceed 255 characters.")
     @Column(nullable = false)
     private String question;
 
+    @Size(max = 1000, message = "Description cannot exceed 1000 characters.")
     @Column(length = 1000)
     private String description;
 
     @Column(nullable = false)
-    private byte answersCount;
+    @JsonProperty("answers-count")
+    private byte answersCount = 0;
 
     @Column(nullable = false)
-    private byte correctAnswersCount;
+    @JsonProperty("correct-answers-count")
+    private byte correctAnswersCount = 0;
 
+    @NotBlank(message = "Question type is required.")
     @Enumerated
     @Column(nullable = false)
     private QuestionType type;
 
+    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @JsonProperty("updated-at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

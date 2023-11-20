@@ -1,6 +1,7 @@
 package com.youquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
@@ -22,12 +23,13 @@ public class AnswerValidation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "The points is required.")
+    @NotNull(message = "Points is required.")
     @DecimalMin(value = "0.0", message = "The points cannot be lower than 0.")
     @DecimalMax(value = "10.0", message = "The points cannot be higher than 10.")
     @Column(nullable = false)
     private double points;
 
+    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
