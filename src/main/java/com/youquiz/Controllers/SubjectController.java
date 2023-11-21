@@ -31,6 +31,23 @@ public class SubjectController {
         );
     }
 
+    @GetMapping
+    public ResponseEntity<Object> getAllSubjects(
+        @RequestParam(defaultValue = "") String title,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "24") int size,
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "ASC") String sortOrder
+    ) {
+        var subjects = subjectService.getAllSubjects(title, page - 1, size, sortBy, sortOrder);
+
+        return ResponseHandler.success(
+            "The subjects of page " + page + " have been fetched successfully",
+            HttpStatus.OK,
+            subjects
+        );
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Object> createSubject(@RequestBody @Valid SubjectDTO subject) {
         Subject createdSubject = subjectService.createSubject(subject);

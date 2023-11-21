@@ -2,10 +2,15 @@ package com.youquiz.Services;
 
 import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
+import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.SubjectRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -52,5 +57,30 @@ public class SubjectService {
         subjectRepository.deleteById(id);
 
         return 1;
+    }
+
+    public Page<Subject> getAllSubjects(String title, int page, int size, String sortBy, String sortOrder) {
+        if (!sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) && !sortOrder.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+            throw new ResourceBadRequest("Please make sure to choose either ascending or descending order.");
+        }
+        Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name())
+            ? Sort.by(sortBy).ascending()
+            : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Subject> subjects = subjectRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
+
+        if (!subjects.hasContent()) {
+            String message = "";
+            if (title.isBlank()) {
+                message = "No subjects found in page " + (page + 1) + ".";
+            } else {
+                message = "No subject matching \"" + title + "\" found.";
+            }
+            throw new ResourceNotFoundException(message);
+        }
+
+        return subjects;
     }
 }
