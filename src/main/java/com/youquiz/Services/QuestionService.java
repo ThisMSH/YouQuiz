@@ -62,7 +62,7 @@ public class QuestionService {
             if (question.isBlank()) {
                 message = "No questions found in page " + (page + 1) + ".";
             } else {
-                message = "No question matching \"" + question + "\" found.";
+                message = "No question matching \"" + question + "\" was found.";
             }
             throw new ResourceNotFoundException(message);
         }

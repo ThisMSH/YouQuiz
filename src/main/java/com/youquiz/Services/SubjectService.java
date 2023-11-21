@@ -70,7 +70,7 @@ public class SubjectService {
             if (title.isBlank()) {
                 message = "No subjects found in page " + (page + 1) + ".";
             } else {
-                message = "No subject matching \"" + title + "\" found.";
+                message = "No subject matching \"" + title + "\" was found.";
             }
             throw new ResourceNotFoundException(message);
         }
