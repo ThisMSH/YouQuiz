@@ -5,6 +5,7 @@ import com.youquiz.Entities.Subject;
 import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.SubjectRepository;
+import com.youquiz.Utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,14 +61,7 @@ public class SubjectService {
     }
 
     public Page<Subject> getAllSubjects(String title, int page, int size, String sortBy, String sortOrder) {
-        if (!sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) && !sortOrder.equalsIgnoreCase(Sort.Direction.DESC.name())) {
-            throw new ResourceBadRequest("Please make sure to choose either ascending or descending order.");
-        }
-        Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name())
-            ? Sort.by(sortBy).ascending()
-            : Sort.by(sortBy).descending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
 
         Page<Subject> subjects = subjectRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
 
