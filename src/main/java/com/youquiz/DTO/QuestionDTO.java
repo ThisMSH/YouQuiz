@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,5 +39,6 @@ public class QuestionDTO {
     @JsonProperty("subject-id")
     private Long subjectId;
 
-    // Add a list of MediaDTO
+    @JsonProperty("medias")
+    private List<MediaDTO> mediaDTOList;
 }

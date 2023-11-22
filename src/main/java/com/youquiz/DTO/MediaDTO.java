@@ -1,5 +1,6 @@
 package com.youquiz.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.Enums.MediaType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +24,5 @@ public class MediaDTO {
     @NotNull(message = "Media is required.")
     private MultipartFile file;
 
-    @NotNull(message = "Media must be assigned to a question.")
     private Long questionId;
 }

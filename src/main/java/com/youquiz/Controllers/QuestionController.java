@@ -51,7 +51,7 @@ public class QuestionController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createQuestion(@RequestBody @Valid QuestionDTO question) {
+    public ResponseEntity<Object> createQuestion(@ModelAttribute @Valid QuestionDTO question) {
         Question createdQuestion = questionService.createQuestion(question);
 
         return ResponseHandler.success(

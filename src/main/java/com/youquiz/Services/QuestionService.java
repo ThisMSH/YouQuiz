@@ -1,6 +1,7 @@
 package com.youquiz.Services;
 
 import com.youquiz.DTO.AltDTO.QuestionAltDTO;
+import com.youquiz.DTO.MediaDTO;
 import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
 import com.youquiz.Enums.QuestionType;
@@ -18,11 +19,13 @@ import java.util.Optional;
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final MediaService mediaService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public QuestionService(QuestionRepository questionRepository, ModelMapper modelMapper) {
+    public QuestionService(QuestionRepository questionRepository, MediaService mediaService, ModelMapper modelMapper) {
         this.questionRepository = questionRepository;
+        this.mediaService = mediaService;
         this.modelMapper = modelMapper;
     }
 
@@ -30,7 +33,16 @@ public class QuestionService {
         q.setType(QuestionType.valueOf(q.getType().name().toUpperCase()));
         Question question = modelMapper.map(q, Question.class);
 
-        return questionRepository.save(question);
+        Question createdQuestion = questionRepository.save(question);
+
+        if (q.getMediaDTOList() != null) {
+            for (MediaDTO m : q.getMediaDTOList()) {
+                m.setQuestionId(createdQuestion.getId());
+                mediaService.createMedia(m);
+            }
+        }
+
+        return questionRepository.findById(createdQuestion.getId()).get();
     }
 
     public Question getQuestion(Long id) {
@@ -96,5 +108,9 @@ public class QuestionService {
         }
 
         return questionDTOs;
+    }
+
+    public Question updateQuestion(Question question) {
+        return null;
     }
 }

@@ -33,7 +33,7 @@ public class AnswerValidationService {
 
         List<AnswerValidation> avList = avRepository.findByQuestionId(a.getQuestionId());
 
-        if (avList.get(0).getQuestion().getType() == QuestionType.SINGLE) {
+        if (!avList.isEmpty() && avList.get(0).getQuestion().getType() == QuestionType.SINGLE) {
             for (AnswerValidation av : avList) {
                 if (av.getPoints() > 0) {
                     throw new ResourceBadRequest("Questions of type \"Single\" don't accept more than one correct answer.");
