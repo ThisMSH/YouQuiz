@@ -30,6 +30,23 @@ public class AnswerController {
         );
     }
 
+    @GetMapping
+    public ResponseEntity<Object> getAllAnswers(
+        @RequestParam(defaultValue = "") String text,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "24") int size,
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "ASC") String sortOrder
+    ) {
+        var answers = answerService.getAllAnswers(text, page - 1, size, sortBy, sortOrder);
+
+        return ResponseHandler.success(
+            "The answers of page " + page + " have been fetched successfully.",
+            HttpStatus.OK,
+            answers
+        );
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Object> createAnswer(@RequestBody @Valid Answer answer) {
         Answer createdAnswer = answerService.createAnswer(answer);
