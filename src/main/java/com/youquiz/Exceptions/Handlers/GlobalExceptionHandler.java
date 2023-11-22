@@ -25,4 +25,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleMappingException(MappingException e) {
         return ResponseHandler.exception(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseHandler.exception(e, HttpStatus.BAD_REQUEST);
+    }
 }

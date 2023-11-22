@@ -34,15 +34,17 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<Object> getAllQuestions(
         @RequestParam(defaultValue = "") String question,
+        @RequestParam(defaultValue = "") String type,
+        @RequestParam(defaultValue = "0") Long level,
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "24") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "ASC") String sortOrder
     ) {
-        var questions = questionService.getAllQuestions(question, page - 1, size, sortBy, sortOrder);
+        var questions = questionService.getAllQuestionsByFilters(question, type, level, page - 1, size, sortBy, sortOrder);
 
         return ResponseHandler.success(
-            "The questions of page " + page + " have been fetched successfully.",
+            "The questions have been fetched successfully.",
             HttpStatus.OK,
             questions
         );
