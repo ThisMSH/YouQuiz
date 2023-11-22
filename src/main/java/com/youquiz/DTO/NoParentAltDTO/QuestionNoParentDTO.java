@@ -1,10 +1,6 @@
-package com.youquiz.DTO.Alt;
+package com.youquiz.DTO.NoParentAltDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.youquiz.Entities.AnswerValidation;
-import com.youquiz.Entities.Level;
-import com.youquiz.Entities.Media;
-import com.youquiz.Entities.Subject;
 import com.youquiz.Enums.QuestionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +10,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class QuestionAltDTO {
+public class QuestionNoParentDTO {
     private Long id;
 
     private String question;
@@ -35,11 +31,15 @@ public class QuestionAltDTO {
     @JsonProperty("updated-at")
     private LocalDateTime updatedAt;
 
-    private Level level;
+    @JsonProperty("level-id")
+    private Long levelId;
 
-    private Subject subject;
+    @JsonProperty("subject-id")
+    private Long subjectId;
 
-    private List<Media> medias;
+    @JsonProperty("media-ids")
+    private List<Long> mediaIds;
 
-    private List<AnswerValidation> answerValidations;
+    @JsonProperty("answer-validation-ids")
+    private List<Long> answerValidationIds;
 }

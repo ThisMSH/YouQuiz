@@ -1,6 +1,7 @@
 package com.youquiz.Exceptions.Handlers;
 
 import com.youquiz.Utils.ResponseHandler;
+import org.modelmapper.MappingException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +19,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {PropertyReferenceException.class})
     public ResponseEntity<Object> handlePropertyReferenceException(PropertyReferenceException e) {
         return ResponseHandler.exception(e, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {MappingException.class})
+    public ResponseEntity<Object> handleMappingException(MappingException e) {
+        return ResponseHandler.exception(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

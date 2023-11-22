@@ -46,6 +46,5 @@ public class Media {
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
-    @JsonBackReference
     private Question question;
 }
