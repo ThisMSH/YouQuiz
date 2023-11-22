@@ -32,9 +32,21 @@ public class LevelController {
         );
     }
 
-    @GetMapping("/search/{title}")
-    public List<Level> getLevelsByTitle(@PathVariable String title) {
-        return levelService.getLevelsByTitle(title);
+    @GetMapping
+    public ResponseEntity<Object> getLevelsByTitle(
+        @RequestParam(defaultValue = "") String title,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "24") int size,
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "ASC") String sortOrder
+    ) {
+        var levels = levelService.getAllLevels(title, page - 1, size, sortBy, sortOrder);
+
+        return ResponseHandler.success(
+            "The levels of page " + page + " have been fetched successfully.",
+            HttpStatus.OK,
+            levels
+        );
     }
 
     @PostMapping("/add")

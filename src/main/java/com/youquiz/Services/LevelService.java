@@ -1,11 +1,16 @@
 package com.youquiz.Services;
 
+import com.youquiz.DTO.AltDTO.LevelAltDTO;
 import com.youquiz.Entities.Level;
 import com.youquiz.Exceptions.ResourceAlreadyExists;
 import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.LevelRepository;
+import com.youquiz.Utils.Utilities;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +19,12 @@ import java.util.Optional;
 @Service
 public class LevelService {
     private final LevelRepository levelRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public LevelService(LevelRepository levelRepository) {
+    public LevelService(LevelRepository levelRepository, ModelMapper modelMapper) {
         this.levelRepository = levelRepository;
+        this.modelMapper = modelMapper;
     }
 
     public Level createLevel(Level level) {
@@ -48,7 +55,23 @@ public class LevelService {
         return 1;
     }
 
-    public List<Level> getLevelsByTitle(String title) {
-        return levelRepository.findByTitleLikeIgnoreCase("%" + title + "%");
+    public Page<LevelAltDTO> getAllLevels(String title, int page, int size, String sortBy, String sortOrder) {
+        Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
+
+        Page<Level> levels = levelRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
+
+        Page<LevelAltDTO> levelDTOs = levels.map(lvl -> modelMapper.map(lvl, LevelAltDTO.class));
+
+        if (!levels.hasContent()) {
+            String message = "";
+            if (title.isBlank()) {
+                message = "No levels found in page " + (page + 1) + ".";
+            } else {
+                message = "No level matching \"" + title + "\" was found.";
+            }
+            throw new ResourceNotFoundException(message);
+        }
+
+        return levelDTOs;
     }
 }
