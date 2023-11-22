@@ -43,7 +43,7 @@ public class Question {
     @JsonProperty("correct-answers-count")
     private byte correctAnswersCount = 0;
 
-    @NotBlank(message = "Question type is required.")
+    @NotNull(message = "Question type is required.")
     @Enumerated
     @Column(nullable = false)
     private QuestionType type;

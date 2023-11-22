@@ -1,11 +1,15 @@
 package com.youquiz.Services;
 
+import com.youquiz.DTO.AltDTO.QuestionAltDTO;
 import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.QuestionRepository;
+import com.youquiz.Utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -41,5 +45,25 @@ public class QuestionService {
         questionRepository.deleteById(id);
 
         return 1;
+    }
+
+    public Page<QuestionAltDTO> getAllQuestions(String question, int page, int size, String sortBy, String sortOrder) {
+        Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
+
+        Page<Question> questions = questionRepository.findAllByQuestionLikeIgnoreCase("%" + question + "%", pageable);
+
+        Page<QuestionAltDTO> questionDTOs = questions.map(q -> modelMapper.map(q, QuestionAltDTO.class));
+
+        if (!questions.hasContent()) {
+            String message = "";
+            if (question.isBlank()) {
+                message = "No questions found in page " + (page + 1) + ".";
+            } else {
+                message = "No question matching \"" + question + "\" was found.";
+            }
+            throw new ResourceNotFoundException(message);
+        }
+
+        return questionDTOs;
     }
 }

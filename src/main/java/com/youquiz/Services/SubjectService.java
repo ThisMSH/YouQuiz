@@ -1,14 +1,22 @@
 package com.youquiz.Services;
 
+import com.youquiz.DTO.AltDTO.SubjectAltDTO;
+import com.youquiz.DTO.NoParentAltDTO.QuestionNoParentDTO;
+import com.youquiz.DTO.NoParentAltDTO.SubjectNoParentDTO;
 import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.SubjectRepository;
+import com.youquiz.Utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SubjectService {
@@ -52,5 +60,25 @@ public class SubjectService {
         subjectRepository.deleteById(id);
 
         return 1;
+    }
+
+    public Page<SubjectAltDTO> getAllSubjects(String title, int page, int size, String sortBy, String sortOrder) {
+        Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
+
+        Page<Subject> subjects = subjectRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
+
+        Page<SubjectAltDTO> subjectDTOs = subjects.map(subj -> modelMapper.map(subj, SubjectAltDTO.class));
+
+        if (!subjects.hasContent()) {
+            String message = "";
+            if (title.isBlank()) {
+                message = "No subjects found in page " + (page + 1) + ".";
+            } else {
+                message = "No subject matching \"" + title + "\" was found.";
+            }
+            throw new ResourceNotFoundException(message);
+        }
+
+        return subjectDTOs;
     }
 }
