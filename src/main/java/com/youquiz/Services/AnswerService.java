@@ -61,11 +61,19 @@ public class AnswerService {
             if (answers.getTotalPages() > 0 && (page + 1) > answers.getTotalPages()) {
                 message = "No answers found in page " + (page + 1) + ".";
             } else {
-                message = "No answer matching \"" + text + "\" was found.";
+                message = "No answer was found.";
             }
             throw new ResourceNotFoundException(message);
         }
 
         return answerDTOs;
+    }
+
+    public Answer updateAnswer(Answer a) {
+        Answer answer = answerRepository.findById(a.getId()).orElseThrow(() -> new ResourceNotFoundException("The answer does not found"));
+
+        answer.setAnswer(a.getAnswer());
+
+        return answerRepository.save(answer);
     }
 }
