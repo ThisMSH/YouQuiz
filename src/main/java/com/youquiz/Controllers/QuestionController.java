@@ -36,12 +36,13 @@ public class QuestionController {
         @RequestParam(defaultValue = "") String question,
         @RequestParam(defaultValue = "") String type,
         @RequestParam(defaultValue = "0") Long level,
+        @RequestParam(defaultValue = "0") Long subject,
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "24") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "ASC") String sortOrder
     ) {
-        var questions = questionService.getAllQuestionsByFilters(question, type, level, page - 1, size, sortBy, sortOrder);
+        var questions = questionService.getAllQuestionsByFilters(question, type, level, subject, page - 1, size, sortBy, sortOrder);
 
         return ResponseHandler.success(
             "The questions have been fetched successfully.",

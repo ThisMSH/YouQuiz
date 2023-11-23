@@ -7,11 +7,13 @@ import com.youquiz.Entities.Question;
 import com.youquiz.Enums.QuestionType;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.QuestionRepository;
+import com.youquiz.Specifications.QuestionSpecification;
 import com.youquiz.Utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -61,39 +63,25 @@ public class QuestionService {
         return 1;
     }
 
-    public Page<QuestionAltDTO> getAllQuestionsByFilters(String question, String type, Long levelId, int page, int size, String sortBy, String sortOrder) {
-        Page<Question> questions;
-        QuestionType questionType;
+    public Page<QuestionAltDTO> getAllQuestionsByFilters(String question, String type, Long levelId, Long subjectId, int page, int size, String sortBy, String sortOrder) {
+        QuestionType questionType = null;
         Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
 
-        try {
-            questionType = QuestionType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Question type is not valid.");
+        if (!type.isBlank()) {
+            try {
+                questionType = QuestionType.valueOf(type.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Question type is not valid.");
+            }
         }
 
-        if (type.isBlank() && levelId == 0) {
-            questions = questionRepository.findAllByQuestionLikeIgnoreCase("%" + question + "%", pageable);
-        } else if (!type.isBlank() && levelId == 0) {
-            questions = questionRepository.findAllByQuestionLikeIgnoreCaseAndType(
-                "%" + question + "%",
-                questionType,
-                pageable
-            );
-        } else if (type.isBlank()) {
-            questions = questionRepository.findAllByQuestionLikeIgnoreCaseAndLevelId(
-                "%" + question + "%",
-                levelId,
-                pageable
-            );
-        } else {
-            questions = questionRepository.findAllByQuestionLikeIgnoreCaseAndTypeAndLevelId(
-                "%" + question + "%",
-                questionType,
-                levelId,
-                pageable
-            );
-        }
+        Page<Question> questions = questionRepository.findAll(
+            Specification.where(QuestionSpecification.questionContains(question))
+                .and(QuestionSpecification.typeEquals(questionType))
+                .and(QuestionSpecification.getByLevel(levelId))
+                .and(QuestionSpecification.getBySubject(subjectId)),
+            pageable
+        );
 
         Page<QuestionAltDTO> questionDTOs = questions.map(q -> modelMapper.map(q, QuestionAltDTO.class));
 
