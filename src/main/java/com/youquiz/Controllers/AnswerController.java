@@ -41,7 +41,7 @@ public class AnswerController {
         var answers = answerService.getAllAnswers(text, page - 1, size, sortBy, sortOrder);
 
         return ResponseHandler.success(
-            "The answers of page " + page + " have been fetched successfully.",
+            "The answers have been fetched successfully.",
             HttpStatus.OK,
             answers
         );

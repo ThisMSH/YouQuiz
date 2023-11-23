@@ -58,7 +58,7 @@ public class AnswerService {
 
         if (!answers.hasContent()) {
             String message = "";
-            if (text.isBlank()) {
+            if (answers.getTotalPages() > 0 && (page + 1) > answers.getTotalPages()) {
                 message = "No answers found in page " + (page + 1) + ".";
             } else {
                 message = "No answer matching \"" + text + "\" was found.";
