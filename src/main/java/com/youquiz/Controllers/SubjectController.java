@@ -42,7 +42,7 @@ public class SubjectController {
         var subjects = subjectService.getAllSubjects(title, page - 1, size, sortBy, sortOrder);
 
         return ResponseHandler.success(
-            "The subjects of page " + page + " have been fetched successfully.",
+            "The subjects have been fetched successfully.",
             HttpStatus.OK,
             subjects
         );
