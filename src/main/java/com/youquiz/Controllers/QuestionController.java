@@ -1,5 +1,6 @@
 package com.youquiz.Controllers;
 
+import com.youquiz.DTO.AltDTO.QuestionAltDTO;
 import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
 import com.youquiz.Services.QuestionService;
@@ -22,7 +23,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getQuestion(@PathVariable Long id) {
-        Question question = questionService.getQuestion(id);
+        QuestionAltDTO question = questionService.getQuestion(id);
 
         return ResponseHandler.success(
             "The question has been fetched successfully.",
@@ -34,28 +35,42 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<Object> getAllQuestions(
         @RequestParam(defaultValue = "") String question,
+        @RequestParam(defaultValue = "") String type,
+        @RequestParam(defaultValue = "0") Long level,
+        @RequestParam(defaultValue = "0") Long subject,
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "24") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "ASC") String sortOrder
     ) {
-        var questions = questionService.getAllQuestions(question, page - 1, size, sortBy, sortOrder);
+        var questions = questionService.getAllQuestionsByFilters(question, type, level, subject, page - 1, size, sortBy, sortOrder);
 
         return ResponseHandler.success(
-            "The questions of page " + page + " have been fetched successfully.",
+            "The questions have been fetched successfully.",
             HttpStatus.OK,
             questions
         );
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createQuestion(@RequestBody @Valid QuestionDTO question) {
+    public ResponseEntity<Object> createQuestion(@ModelAttribute @Valid QuestionDTO question) {
         Question createdQuestion = questionService.createQuestion(question);
 
         return ResponseHandler.success(
             "The question has been created successfully.",
             HttpStatus.CREATED,
             createdQuestion
+        );
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateQuestion(@RequestBody @Valid QuestionDTO question) {
+        Question updatedQuestion = questionService.updateQuestion(question);
+
+        return ResponseHandler.success(
+            "The question has been updated successfully.",
+            HttpStatus.OK,
+            updatedQuestion
         );
     }
 
