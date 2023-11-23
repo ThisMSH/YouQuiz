@@ -34,6 +34,14 @@ public class AnswerValidationService {
     }
 
     public AnswerValidation assignAnswerToQuestion(AnswerValidationDTO a) {
+        if (!questionRepository.existsById(a.getQuestionId())) {
+            throw new ResourceNotFoundException("The question does not exist.");
+        }
+
+        if (!answerRepository.existsById(a.getAnswerId())) {
+            throw new ResourceNotFoundException("The answer does not exist.");
+        }
+
         if (avRepository.existsByQuestionIdAndAnswerId(a.getQuestionId(), a.getAnswerId())) {
             throw new ResourceNotFoundException("The answer is already assigned to this question.");
         }
