@@ -6,7 +6,9 @@ import com.youquiz.DTO.QuestionDTO;
 import com.youquiz.Entities.Question;
 import com.youquiz.Enums.QuestionType;
 import com.youquiz.Exceptions.ResourceNotFoundException;
+import com.youquiz.Repositories.LevelRepository;
 import com.youquiz.Repositories.QuestionRepository;
+import com.youquiz.Repositories.SubjectRepository;
 import com.youquiz.Specifications.QuestionSpecification;
 import com.youquiz.Utils.Utilities;
 import org.modelmapper.ModelMapper;
@@ -23,16 +25,27 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final MediaService mediaService;
     private final ModelMapper modelMapper;
+    private final LevelRepository levelRepository;
+    private final SubjectRepository subjectRepository;
 
     @Autowired
-    public QuestionService(QuestionRepository questionRepository, MediaService mediaService, ModelMapper modelMapper) {
+    public QuestionService(QuestionRepository questionRepository, MediaService mediaService, ModelMapper modelMapper, LevelRepository levelRepository, SubjectRepository subjectRepository) {
         this.questionRepository = questionRepository;
         this.mediaService = mediaService;
         this.modelMapper = modelMapper;
+        this.levelRepository = levelRepository;
+        this.subjectRepository = subjectRepository;
     }
 
     public Question createQuestion(QuestionDTO q) {
-        q.setType(QuestionType.valueOf(q.getType().name().toUpperCase()));
+        if (levelRepository.existsById(q.getLevelId())) {
+            throw new ResourceNotFoundException("The level does not exist.");
+        }
+
+        if (subjectRepository.existsById(q.getSubjectId())) {
+            throw new ResourceNotFoundException("The subject does not exist.");
+        }
+        
         Question question = modelMapper.map(q, Question.class);
 
         Question createdQuestion = questionRepository.save(question);
