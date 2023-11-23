@@ -87,4 +87,14 @@ public class AnswerValidationService {
             .map(av -> modelMapper.map(av, AnswerValidationAltDTO.class))
             .collect(Collectors.toList());
     }
+
+    public List<AnswerValidationAltDTO> getAssignedAnswersByAnswer(Long answerId) {
+        if (!answerRepository.existsById(answerId)) {
+            throw new ResourceNotFoundException("The answer does not exist.");
+        }
+
+        return avRepository.findAllByAnswerId(answerId).stream()
+            .map(av -> modelMapper.map(av, AnswerValidationAltDTO.class))
+            .collect(Collectors.toList());
+    }
 }

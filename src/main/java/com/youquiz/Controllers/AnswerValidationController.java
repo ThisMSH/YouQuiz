@@ -42,6 +42,17 @@ public class AnswerValidationController {
         );
     }
 
+    @GetMapping("/by-answer-{answerId}")
+    public ResponseEntity<Object> getAssignedAnswersByAnswer(@PathVariable Long answerId) {
+        var avList = avService.getAssignedAnswersByAnswer(answerId);
+
+        return ResponseHandler.success(
+            "Assigned answers have been fetched by question ID successfully.",
+            HttpStatus.OK,
+            avList
+        );
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Object> assignAnswerToQuestion(@RequestBody @Valid AnswerValidationDTO a) {
         AnswerValidation av = avService.assignAnswerToQuestion(a);
