@@ -62,10 +62,10 @@ public class QuestionService {
         return questionRepository.findById(createdQuestion.getId()).get();
     }
 
-    public Question getQuestion(Long id) {
-        Optional<Question> question = questionRepository.findById(id);
+    public QuestionAltDTO getQuestion(Long id) {
+        Question question = questionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Question not found."));
 
-        return question.orElseThrow(() -> new ResourceNotFoundException("Question not found."));
+        return modelMapper.map(question, QuestionAltDTO.class);
     }
 
     public Integer deleteQuestion(Long id) {
