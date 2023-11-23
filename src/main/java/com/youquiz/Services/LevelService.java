@@ -64,10 +64,10 @@ public class LevelService {
 
         if (!levels.hasContent()) {
             String message = "";
-            if (title.isBlank()) {
+            if (levels.getTotalPages() > 0 && (page + 1) > levels.getTotalPages()) {
                 message = "No levels found in page " + (page + 1) + ".";
             } else {
-                message = "No level matching \"" + title + "\" was found.";
+                message = "No level was found.";
             }
             throw new ResourceNotFoundException(message);
         }

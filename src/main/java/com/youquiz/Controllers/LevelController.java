@@ -43,7 +43,7 @@ public class LevelController {
         var levels = levelService.getAllLevels(title, page - 1, size, sortBy, sortOrder);
 
         return ResponseHandler.success(
-            "The levels of page " + page + " have been fetched successfully.",
+            "The levels have been fetched successfully.",
             HttpStatus.OK,
             levels
         );
