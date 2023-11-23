@@ -58,6 +58,17 @@ public class AnswerController {
         );
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateAnswer(@RequestBody @Valid Answer answer) {
+        Answer updatedAnswer = answerService.updateAnswer(answer);
+
+        return ResponseHandler.success(
+            "The answer has been updated successfully.",
+            HttpStatus.OK,
+            updatedAnswer
+        );
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteAnswer(@PathVariable("id") Long id) {
         int del = answerService.deleteAnswer(id);
