@@ -71,10 +71,10 @@ public class SubjectService {
 
         if (!subjects.hasContent()) {
             String message = "";
-            if (title.isBlank()) {
+            if (subjects.getTotalPages() > 0 && (page + 1) > subjects.getTotalPages()) {
                 message = "No subjects found in page " + (page + 1) + ".";
             } else {
-                message = "No subject matching \"" + title + "\" was found.";
+                message = "No subject was found.";
             }
             throw new ResourceNotFoundException(message);
         }
