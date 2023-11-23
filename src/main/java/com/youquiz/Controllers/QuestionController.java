@@ -62,6 +62,17 @@ public class QuestionController {
         );
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateQuestion(@RequestBody @Valid QuestionDTO question) {
+        Question updatedQuestion = questionService.updateQuestion(question);
+
+        return ResponseHandler.success(
+            "The question has been updated successfully.",
+            HttpStatus.OK,
+            updatedQuestion
+        );
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteQuestion(@PathVariable Long id) {
         int del = questionService.deleteQuestion(id);

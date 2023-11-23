@@ -3,7 +3,9 @@ package com.youquiz.Services;
 import com.youquiz.DTO.AltDTO.QuestionAltDTO;
 import com.youquiz.DTO.MediaDTO;
 import com.youquiz.DTO.QuestionDTO;
+import com.youquiz.Entities.Level;
 import com.youquiz.Entities.Question;
+import com.youquiz.Entities.Subject;
 import com.youquiz.Enums.QuestionType;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.LevelRepository;
@@ -38,14 +40,14 @@ public class QuestionService {
     }
 
     public Question createQuestion(QuestionDTO q) {
-        if (levelRepository.existsById(q.getLevelId())) {
+        if (!levelRepository.existsById(q.getLevelId())) {
             throw new ResourceNotFoundException("The level does not exist.");
         }
 
-        if (subjectRepository.existsById(q.getSubjectId())) {
+        if (!subjectRepository.existsById(q.getSubjectId())) {
             throw new ResourceNotFoundException("The subject does not exist.");
         }
-        
+
         Question question = modelMapper.map(q, Question.class);
 
         Question createdQuestion = questionRepository.save(question);
@@ -111,7 +113,34 @@ public class QuestionService {
         return questionDTOs;
     }
 
-    public Question updateQuestion(Question question) {
-        return null;
+    public Question updateQuestion(QuestionDTO q) {
+        Optional<Question> questionOptional = questionRepository.findById(q.getId());
+
+        if (questionOptional.isEmpty()) {
+            throw new ResourceNotFoundException("The question does not exist.");
+        }
+
+        if (!levelRepository.existsById(q.getLevelId())) {
+            throw new ResourceNotFoundException("The level does not exist, please select a valid level.");
+        }
+
+        if (!subjectRepository.existsById(q.getSubjectId())) {
+            throw new ResourceNotFoundException("The subject does not exist, please select a valid subject.");
+        }
+
+        Level level = new Level();
+        level.setId(q.getLevelId());
+
+        Subject subject = new Subject();
+        subject.setId(q.getSubjectId());
+
+        Question question = questionOptional.get();
+        question.setQuestion(q.getQuestion());
+        question.setDescription(q.getDescription());
+        question.setType(q.getType());
+        question.setLevel(level);
+        question.setSubject(subject);
+
+        return questionRepository.save(question);
     }
 }

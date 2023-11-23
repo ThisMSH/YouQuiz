@@ -15,18 +15,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionDTO {
+    private Long id;
+
     @NotBlank(message = "Question is required.")
     @Size(max = 255, message = "Question cannot exceed 255 characters.")
     private String question;
 
     @Size(max = 1000, message = "Description cannot exceed 1000 characters.")
     private String description;
-
-    @JsonProperty("answers-count")
-    private byte answersCount = 0;
-
-    @JsonProperty("correct-answers-count")
-    private byte correctAnswersCount = 0;
 
     @NotNull(message = "Question type is required.")
     private QuestionType type;
