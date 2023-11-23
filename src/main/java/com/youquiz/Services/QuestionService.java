@@ -156,11 +156,7 @@ public class QuestionService {
     }
 
     public Question updateQuestion(QuestionDTO q) {
-        Optional<Question> questionOptional = questionRepository.findById(q.getId());
-
-        if (questionOptional.isEmpty()) {
-            throw new ResourceNotFoundException("The question does not exist.");
-        }
+        Question question = questionRepository.findById(q.getId()).orElseThrow(() -> new ResourceNotFoundException("The question does not exist."));
 
         if (!levelRepository.existsById(q.getLevelId())) {
             throw new ResourceNotFoundException("The level does not exist, please select a valid level.");
@@ -176,7 +172,6 @@ public class QuestionService {
         Subject subject = new Subject();
         subject.setId(q.getSubjectId());
 
-        Question question = questionOptional.get();
         question.setQuestion(q.getQuestion());
         question.setDescription(q.getDescription());
         question.setType(q.getType());
