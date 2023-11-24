@@ -30,6 +30,10 @@ public class SubjectService {
     }
 
     public Subject createSubject(SubjectDTO s) {
+        if (s.getParentId() != null && !subjectRepository.existsById(s.getParentId())) {
+            throw new ResourceNotFoundException("Parent subject does not exist.");
+        }
+
         Subject subject = modelMapper.map(s, Subject.class);
 
         return subjectRepository.save(subject);
