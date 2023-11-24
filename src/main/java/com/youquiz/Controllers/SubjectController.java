@@ -59,6 +59,17 @@ public class SubjectController {
         );
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateSubject(@RequestBody @Valid SubjectDTO subject) {
+        Subject updatedSubject = subjectService.updateSubject(subject);
+
+        return ResponseHandler.success(
+            "The subject has been updated successfully.",
+            HttpStatus.OK,
+            updatedSubject
+        );
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteSubject(@PathVariable("id") Long id) {
         int del = subjectService.deleteSubject(id);

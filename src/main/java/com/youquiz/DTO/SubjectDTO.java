@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubjectDTO {
+    private Long id;
+
     @NotBlank(message = "Title is required.")
     @Size(max = 50, message = "Title cannot exceed 50 characters.")
     private String title;

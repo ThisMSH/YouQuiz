@@ -5,6 +5,7 @@ import com.youquiz.DTO.NoParentAltDTO.QuestionNoParentDTO;
 import com.youquiz.DTO.NoParentAltDTO.SubjectNoParentDTO;
 import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
+import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.SubjectRepository;
 import com.youquiz.Utils.Utilities;
@@ -30,6 +31,10 @@ public class SubjectService {
     }
 
     public Subject createSubject(SubjectDTO s) {
+        if (s.getParentId() != null && !subjectRepository.existsById(s.getParentId())) {
+            throw new ResourceNotFoundException("Parent subject does not exist.");
+        }
+
         Subject subject = modelMapper.map(s, Subject.class);
 
         return subjectRepository.save(subject);
@@ -80,5 +85,27 @@ public class SubjectService {
         }
 
         return subjectDTOs;
+    }
+
+    public Subject updateSubject(SubjectDTO s) {
+        Subject subject = subjectRepository.findById(s.getId()).orElseThrow(() -> new ResourceNotFoundException("Subject does not exist."));
+
+        if (s.getParentId() != null && !subjectRepository.existsById(s.getParentId())) {
+            throw new ResourceNotFoundException("Parent subject does not exist.");
+        }
+
+        Subject subParent = new Subject();
+
+        if (s.getParentId() != null) {
+            subParent.setId(s.getParentId());
+            subject.setParent(subParent);
+        } else {
+            subject.setParent(null);
+        }
+
+        subject.setId(s.getId());
+        subject.setTitle(s.getTitle());
+
+        return subjectRepository.save(subject);
     }
 }
