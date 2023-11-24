@@ -36,6 +36,10 @@ public class LevelService {
             throw new ResourceBadRequest("Minimum points cannot be higher or equal to maximum points.");
         }
 
+        if (level.getMaxPoints() == 0 || level.getMinPoints() == 0) {
+            throw new ResourceBadRequest("The points cannot equal 0.");
+        }
+
         return levelRepository.save(level);
     }
 
