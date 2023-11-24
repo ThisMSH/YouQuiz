@@ -10,8 +10,5 @@ import java.util.stream.Stream;
 public interface FileStorageDAO {
     void init();
     String saveFile(MultipartFile file);
-    Resource loadOne(Long id);
-    Stream<Path> loadAll();
     void deleteOne(String p);
-    void deleteByQuestion(Question question);
 }
