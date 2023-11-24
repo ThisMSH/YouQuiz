@@ -70,16 +70,6 @@ public class MediaService implements FileStorageDAO {
     }
 
     @Override
-    public Resource loadOne(Long id) {
-        return null;
-    }
-
-    @Override
-    public Stream<Path> loadAll() {
-        return null;
-    }
-
-    @Override
     public void deleteOne(String p) {
         Path filePath = Path.of(p);
 
@@ -88,11 +78,6 @@ public class MediaService implements FileStorageDAO {
         } catch (IOException ex) {
             throw new StorageException("Failed to delete the saved file: " + ex.getMessage());
         }
-    }
-
-    @Override
-    public void deleteByQuestion(Question question) {
-
     }
 
     public Media createMedia(MediaDTO m) {
