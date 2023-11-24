@@ -60,6 +60,17 @@ public class LevelController {
         );
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateLevel(@RequestBody @Valid Level level) {
+        Level updatedLevel = levelService.updateLevel(level);
+
+        return ResponseHandler.success(
+            "The level has been updated successfully.",
+            HttpStatus.OK,
+            updatedLevel
+        );
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteLevel(@PathVariable("id") Long id) {
         int del = levelService.deleteLevel(id);

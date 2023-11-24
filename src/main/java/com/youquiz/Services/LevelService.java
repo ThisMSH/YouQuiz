@@ -78,4 +78,27 @@ public class LevelService {
 
         return levelDTOs;
     }
+
+    public Level updateLevel(Level l) {
+        Level level = levelRepository.findById(l.getId()).orElseThrow(() -> new ResourceNotFoundException("The level does not exist."));
+
+        System.out.println("\n\n\n\n\n\n");
+        System.out.println(l.getMaxPoints());
+        System.out.println(l.getMinPoints());
+        System.out.println("\n\n\n\n\n\n");
+        if (l.getMaxPoints() <= l.getMinPoints()) {
+            throw new ResourceBadRequest("Minimum points cannot be higher or equal to maximum points.");
+        }
+
+        if (l.getMaxPoints() == 0 || l.getMinPoints() == 0) {
+            throw new ResourceBadRequest("The points cannot equal 0.");
+        }
+
+        level.setTitle(l.getTitle());
+        level.setDescription(l.getDescription());
+        level.setMaxPoints(l.getMaxPoints());
+        level.setMinPoints(l.getMinPoints());
+
+        return levelRepository.save(level);
+    }
 }
