@@ -93,7 +93,7 @@ public class QuestionService {
         List<AnswerValidationNoParentDTO> avNoParent = q.getAnswerValidations();
 
         if (!avNoParent.isEmpty()) {
-            List<AnswerValidation> av = avRepository.findByQuestionId(q.getId());
+            List<AnswerValidation> av = avRepository.findAllByQuestionId(q.getId());
 
             for (int i = 0; i < avNoParent.size(); i++) {
                 avNoParent.get(i).setQuestionId(av.get(i).getQuestion().getId());
