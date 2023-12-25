@@ -1,27 +1,32 @@
-package com.youquiz.dto;
+package com.youquiz.dto.requestdto;
 
-import com.youquiz.enums.MediaType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class MediaDTO {
+public class MediaRequestDTO {
+    private Long id;
+
     @NotBlank(message = "Title is required.")
     @Size(max = 255, message = "Title cannot exceed 255 characters.")
     private String title;
 
-    @NotNull(message = "Media type is required.")
-    private MediaType type;
+    @NotBlank(message = "URL is required.")
+    private String url;
 
-    @NotNull(message = "Media is required.")
-    private MultipartFile file;
+    @NotBlank(message = "Media type is required.")
+    private String type;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    @NotNull(message = "Question is required.")
     private Long questionId;
 }

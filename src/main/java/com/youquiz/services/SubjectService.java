@@ -1,7 +1,6 @@
 package com.youquiz.services;
 
-import com.youquiz.dto.responsedto.SubjectAltDTO;
-import com.youquiz.dto.SubjectDTO;
+import com.youquiz.dto.responsedto.SubjectDTO;
 import com.youquiz.entities.Subject;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.SubjectRepository;
@@ -25,7 +24,7 @@ public class SubjectService {
         this.modelMapper = modelMapper;
     }
 
-    public Subject createSubject(SubjectDTO s) {
+    public Subject createSubject(com.youquiz.dto.SubjectDTO s) {
         if (s.getParentId() != null && !subjectRepository.existsById(s.getParentId())) {
             throw new ResourceNotFoundException("Parent subject does not exist.");
         }
@@ -62,12 +61,12 @@ public class SubjectService {
         return 1;
     }
 
-    public Page<SubjectAltDTO> getAllSubjects(String title, int page, int size, String sortBy, String sortOrder) {
+    public Page<SubjectDTO> getAllSubjects(String title, int page, int size, String sortBy, String sortOrder) {
         Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
 
         Page<Subject> subjects = subjectRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
 
-        Page<SubjectAltDTO> subjectDTOs = subjects.map(subj -> modelMapper.map(subj, SubjectAltDTO.class));
+        Page<SubjectDTO> subjectDTOs = subjects.map(subj -> modelMapper.map(subj, SubjectDTO.class));
 
         if (!subjects.hasContent()) {
             String message = "";
@@ -82,7 +81,7 @@ public class SubjectService {
         return subjectDTOs;
     }
 
-    public Subject updateSubject(SubjectDTO s) {
+    public Subject updateSubject(com.youquiz.dto.SubjectDTO s) {
         Subject subject = subjectRepository.findById(s.getId()).orElseThrow(() -> new ResourceNotFoundException("Subject does not exist."));
 
         if (s.getParentId() != null && !subjectRepository.existsById(s.getParentId())) {

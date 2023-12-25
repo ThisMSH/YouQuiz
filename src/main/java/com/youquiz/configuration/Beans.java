@@ -1,7 +1,7 @@
 package com.youquiz.configuration;
 
 import com.youquiz.dto.AnswerValidationDTO;
-import com.youquiz.dto.MediaDTO;
+import com.youquiz.dto.requestdto.MediaFileRequestDTO;
 import com.youquiz.dto.QuestionDTO;
 import com.youquiz.dto.SubjectDTO;
 import com.youquiz.entities.*;
@@ -49,10 +49,10 @@ public class Beans {
                 );
             });
 
-        modelMapper.typeMap(MediaDTO.class, Media.class)
+        modelMapper.typeMap(MediaFileRequestDTO.class, Media.class)
             .addMappings(mapper -> {
                 mapper.map(
-                    MediaDTO::getQuestionId,
+                    MediaFileRequestDTO::getQuestionId,
                     (dest, id) -> dest.getQuestion().setId((Long) id)
                 );
             });

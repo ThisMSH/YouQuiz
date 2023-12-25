@@ -1,6 +1,6 @@
 package com.youquiz.services;
 
-import com.youquiz.dto.MediaDTO;
+import com.youquiz.dto.requestdto.MediaFileRequestDTO;
 import com.youquiz.entities.Media;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.exceptions.StorageException;
@@ -78,7 +78,7 @@ public class MediaService implements FileStorageDAO {
         }
     }
 
-    public Media createMedia(MediaDTO m) {
+    public Media createMedia(MediaFileRequestDTO m) {
         Path filePath = null;
 
         try {

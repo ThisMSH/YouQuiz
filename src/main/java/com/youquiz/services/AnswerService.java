@@ -1,6 +1,6 @@
 package com.youquiz.services;
 
-import com.youquiz.dto.responsedto.AnswerAltDTO;
+import com.youquiz.dto.responsedto.AnswerDTO;
 import com.youquiz.entities.Answer;
 import com.youquiz.exceptions.ResourceAlreadyExistsException;
 import com.youquiz.exceptions.ResourceNotFoundException;
@@ -49,12 +49,12 @@ public class AnswerService {
         return 1;
     }
 
-    public Page<AnswerAltDTO> getAllAnswers(String text, int page, int size, String sortBy, String sortOrder) {
+    public Page<AnswerDTO> getAllAnswers(String text, int page, int size, String sortBy, String sortOrder) {
         Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
 
         Page<Answer> answers = answerRepository.findAllByAnswerLikeIgnoreCase("%" + text + "%", pageable);
 
-        Page<AnswerAltDTO> answerDTOs = answers.map(an -> modelMapper.map(an, AnswerAltDTO.class));
+        Page<AnswerDTO> answerDTOs = answers.map(an -> modelMapper.map(an, AnswerDTO.class));
 
         if (!answers.hasContent()) {
             String message = "";

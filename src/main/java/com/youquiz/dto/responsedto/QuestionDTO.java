@@ -1,5 +1,7 @@
-package com.youquiz.dto.requestdto;
+package com.youquiz.dto.responsedto;
 
+import com.youquiz.dto.requestdto.LevelRequestDTO;
+import com.youquiz.dto.requestdto.SubjectRequestDTO;
 import com.youquiz.enums.QuestionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,28 +11,18 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class QuestionNoParentDTO {
+public class QuestionDTO {
     private Long id;
-
     private String question;
-
     private String description;
-
     private byte answersCount;
-
     private byte correctAnswersCount;
-
     private QuestionType type;
-
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
-
-    private Long levelId;
-
-    private Long subjectId;
-
-    private List<Long> mediaIds;
-
-    private List<Long> answerValidationIds;
+    private LevelRequestDTO level;
+    private SubjectRequestDTO subject;
+    private List<MediaDTO> medias;
+    private List<AnswerValidationDTO> answerValidations;
+    private List<QuizQuestionDTO> quizQuestions;
 }

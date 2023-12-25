@@ -1,12 +1,11 @@
 package com.youquiz.services;
 
-import com.youquiz.dto.responsedto.AnswerValidationAltDTO;
-import com.youquiz.dto.responsedto.QuestionAltDTO;
-import com.youquiz.dto.requestdto.AnswerValidationNoParentDTO;
-import com.youquiz.dto.requestdto.LevelNoParentDTO;
-import com.youquiz.dto.requestdto.MediaNoParentDTO;
-import com.youquiz.dto.requestdto.SubjectNoParentDTO;
-import com.youquiz.dto.QuestionDTO;
+import com.youquiz.dto.responsedto.AnswerValidationDTO;
+import com.youquiz.dto.responsedto.QuestionDTO;
+import com.youquiz.dto.requestdto.AnswerValidationRequestDTO;
+import com.youquiz.dto.requestdto.LevelRequestDTO;
+import com.youquiz.dto.requestdto.MediaRequestDTO;
+import com.youquiz.dto.requestdto.SubjectRequestDTO;
 import com.youquiz.entities.AnswerValidation;
 import com.youquiz.entities.Level;
 import com.youquiz.entities.Question;
@@ -46,7 +45,7 @@ public class QuestionService {
         this.avRepository = avRepository;
     }
 
-    public Question createQuestion(QuestionDTO q) {
+    public Question createQuestion(com.youquiz.dto.QuestionDTO q) {
         if (!levelRepository.existsById(q.getLevelId())) {
             throw new ResourceNotFoundException("The level does not exist.");
         }
@@ -69,31 +68,31 @@ public class QuestionService {
 //        return questionRepository.findById(createdQuestion.getId()).get();
     }
 
-    public QuestionAltDTO getQuestion(Long id) {
+    public QuestionDTO getQuestion(Long id) {
         Question question = questionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Question not found."));
 
-        QuestionAltDTO q = modelMapper.map(question, QuestionAltDTO.class);
+        QuestionDTO q = modelMapper.map(question, QuestionDTO.class);
 
-        LevelNoParentDTO lvlNoParent = q.getLevel();
+        LevelRequestDTO lvlNoParent = q.getLevel();
         Level level = levelRepository.findById(question.getLevel().getId()).get();
         lvlNoParent.setQuestionIds(level.getQuestions() != null ? level.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
 
-        SubjectNoParentDTO subNoParent = q.getSubject();
+        SubjectRequestDTO subNoParent = q.getSubject();
         Subject subject = subjectRepository.findById(question.getSubject().getId()).get();
         subNoParent.setParentId(subject.getParent() != null ? subject.getParent().getId() : null);
         subNoParent.setChildrenIds(subject.getChildren() != null ? subject.getChildren().stream().map(Subject::getId).collect(Collectors.toList()) : null);
         subNoParent.setQuestionIds(subject.getQuestions() != null ? subject.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
 
-        List<MediaNoParentDTO> mediaNoParent = q.getMedias();
+        List<MediaRequestDTO> mediaNoParent = q.getMedias();
         mediaNoParent = mediaNoParent.stream()
             .peek(media -> media.setQuestionId(q.getId()))
             .collect(Collectors.toList());
 
-        List<AnswerValidationNoParentDTO> avNoParent = q.getAnswerValidations();
+        List<AnswerValidationRequestDTO> avNoParent = q.getAnswerValidations();
 
         if (!avNoParent.isEmpty()) {
             List<AnswerValidation> av = avRepository.findAllByQuestionId(q.getId());
-            List<AnswerValidationAltDTO> avAltDTO = new ArrayList<>();
+            List<AnswerValidationDTO> avAltDTO = new ArrayList<>();
 
             for (int i = 0; i < avNoParent.size(); i++) {
                 avNoParent.get(i).setQuestionId(av.get(i).getQuestion().getId());
@@ -103,7 +102,7 @@ public class QuestionService {
 
                 avAltDTO.add(modelMapper.map(
                     answerValidation,
-                    AnswerValidationAltDTO.class
+                    AnswerValidationDTO.class
                 ));
             }
 
@@ -128,7 +127,7 @@ public class QuestionService {
         return 1;
     }
 
-    public Page<QuestionAltDTO> getAllQuestionsByFilters(String question, String type, Long levelId, Long subjectId, int page, int size, String sortBy, String sortOrder) {
+    public Page<QuestionDTO> getAllQuestionsByFilters(String question, String type, Long levelId, Long subjectId, int page, int size, String sortBy, String sortOrder) {
         QuestionType questionType = null;
         Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
 
@@ -148,7 +147,7 @@ public class QuestionService {
             pageable
         );
 
-        Page<QuestionAltDTO> questionDTOs = questions.map(q -> modelMapper.map(q, QuestionAltDTO.class));
+        Page<QuestionDTO> questionDTOs = questions.map(q -> modelMapper.map(q, QuestionDTO.class));
 
         if (!questions.hasContent()) {
             String message = "";
@@ -163,7 +162,7 @@ public class QuestionService {
         return questionDTOs;
     }
 
-    public Question updateQuestion(QuestionDTO q) {
+    public Question updateQuestion(com.youquiz.dto.QuestionDTO q) {
         Question question = questionRepository.findById(q.getId()).orElseThrow(() -> new ResourceNotFoundException("The question does not exist."));
 
         if (!levelRepository.existsById(q.getLevelId())) {

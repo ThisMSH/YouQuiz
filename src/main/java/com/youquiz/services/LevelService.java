@@ -1,6 +1,6 @@
 package com.youquiz.services;
 
-import com.youquiz.dto.responsedto.LevelAltDTO;
+import com.youquiz.dto.responsedto.LevelDTO;
 import com.youquiz.entities.Level;
 import com.youquiz.exceptions.ResourceAlreadyExistsException;
 import com.youquiz.exceptions.ResourceBadRequestException;
@@ -58,12 +58,12 @@ public class LevelService {
         return 1;
     }
 
-    public Page<LevelAltDTO> getAllLevels(String title, int page, int size, String sortBy, String sortOrder) {
+    public Page<LevelDTO> getAllLevels(String title, int page, int size, String sortBy, String sortOrder) {
         Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
 
         Page<Level> levels = levelRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
 
-        Page<LevelAltDTO> levelDTOs = levels.map(lvl -> modelMapper.map(lvl, LevelAltDTO.class));
+        Page<LevelDTO> levelDTOs = levels.map(lvl -> modelMapper.map(lvl, LevelDTO.class));
 
         if (!levels.hasContent()) {
             String message = "";

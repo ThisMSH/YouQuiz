@@ -1,7 +1,6 @@
 package com.youquiz.controllers;
 
-import com.youquiz.dto.responsedto.QuestionAltDTO;
-import com.youquiz.dto.QuestionDTO;
+import com.youquiz.dto.responsedto.QuestionDTO;
 import com.youquiz.entities.Question;
 import com.youquiz.services.QuestionService;
 import com.youquiz.utils.ResponseHandler;
@@ -24,7 +23,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getQuestion(@PathVariable Long id) {
-        QuestionAltDTO question = questionService.getQuestion(id);
+        QuestionDTO question = questionService.getQuestion(id);
 
         return ResponseHandler.success(
             "The question has been fetched successfully.",
@@ -54,7 +53,7 @@ public class QuestionController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createQuestion(@RequestBody @Valid QuestionDTO question) {
+    public ResponseEntity<Object> createQuestion(@RequestBody @Valid com.youquiz.dto.QuestionDTO question) {
         Question createdQuestion = questionService.createQuestion(question);
 
         return ResponseHandler.success(
@@ -65,7 +64,7 @@ public class QuestionController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateQuestion(@RequestBody @Valid QuestionDTO question) {
+    public ResponseEntity<Object> updateQuestion(@RequestBody @Valid com.youquiz.dto.QuestionDTO question) {
         Question updatedQuestion = questionService.updateQuestion(question);
 
         return ResponseHandler.success(

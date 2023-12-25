@@ -1,6 +1,6 @@
 package com.youquiz.controllers;
 
-import com.youquiz.dto.MediaDTO;
+import com.youquiz.dto.requestdto.MediaFileRequestDTO;
 import com.youquiz.entities.Media;
 import com.youquiz.services.MediaService;
 import com.youquiz.utils.ResponseHandler;
@@ -43,7 +43,7 @@ public class MediaController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createMedia(@ModelAttribute @Valid MediaDTO m) {
+    public ResponseEntity<Object> createMedia(@ModelAttribute @Valid MediaFileRequestDTO m) {
         Media media = mediaService.createMedia(m);
 
         return ResponseHandler.success(

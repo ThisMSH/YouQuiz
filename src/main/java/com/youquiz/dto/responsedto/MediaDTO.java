@@ -1,28 +1,20 @@
 package com.youquiz.dto.responsedto;
 
-import com.youquiz.dto.requestdto.QuestionNoParentDTO;
+import com.youquiz.dto.requestdto.QuestionRequestDTO;
+import com.youquiz.enums.MediaType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class LevelAltDTO {
+public class MediaDTO {
     private Long id;
-
     private String title;
-
-    private String description;
-
-    private double maxPoints;
-
-    private double minPoints;
-
+    private String url;
+    private MediaType type;
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
-
-    private List<QuestionNoParentDTO> questions;
+    private QuestionRequestDTO question;
 }

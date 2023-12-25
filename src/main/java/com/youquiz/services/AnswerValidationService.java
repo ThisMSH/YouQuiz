@@ -1,7 +1,6 @@
 package com.youquiz.services;
 
-import com.youquiz.dto.responsedto.AnswerValidationAltDTO;
-import com.youquiz.dto.AnswerValidationDTO;
+import com.youquiz.dto.responsedto.AnswerValidationDTO;
 import com.youquiz.entities.AnswerValidation;
 import com.youquiz.enums.QuestionType;
 import com.youquiz.exceptions.ResourceBadRequestException;
@@ -33,7 +32,7 @@ public class AnswerValidationService {
         this.modelMapper = modelMapper;
     }
 
-    public AnswerValidation assignAnswerToQuestion(AnswerValidationDTO a) {
+    public AnswerValidation assignAnswerToQuestion(com.youquiz.dto.AnswerValidationDTO a) {
         if (!questionRepository.existsById(a.getQuestionId())) {
             throw new ResourceNotFoundException("The question does not exist.");
         }
@@ -78,23 +77,23 @@ public class AnswerValidationService {
         return 1;
     }
 
-    public List<AnswerValidationAltDTO> getAssignedAnswersByQuestion(Long questionId) {
+    public List<AnswerValidationDTO> getAssignedAnswersByQuestion(Long questionId) {
         if (!questionRepository.existsById(questionId)) {
             throw new ResourceNotFoundException("The question does not exist.");
         }
 
         return avRepository.findAllByQuestionId(questionId).stream()
-            .map(av -> modelMapper.map(av, AnswerValidationAltDTO.class))
+            .map(av -> modelMapper.map(av, AnswerValidationDTO.class))
             .collect(Collectors.toList());
     }
 
-    public List<AnswerValidationAltDTO> getAssignedAnswersByAnswer(Long answerId) {
+    public List<AnswerValidationDTO> getAssignedAnswersByAnswer(Long answerId) {
         if (!answerRepository.existsById(answerId)) {
             throw new ResourceNotFoundException("The answer does not exist.");
         }
 
         return avRepository.findAllByAnswerId(answerId).stream()
-            .map(av -> modelMapper.map(av, AnswerValidationAltDTO.class))
+            .map(av -> modelMapper.map(av, AnswerValidationDTO.class))
             .collect(Collectors.toList());
     }
 }

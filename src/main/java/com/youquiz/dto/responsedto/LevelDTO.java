@@ -1,7 +1,5 @@
 package com.youquiz.dto.responsedto;
 
-import com.youquiz.dto.requestdto.QuestionNoParentDTO;
-import com.youquiz.dto.requestdto.SubjectNoParentDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,18 +8,13 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class SubjectAltDTO {
+public class LevelDTO {
     private Long id;
-
     private String title;
-
+    private String description;
+    private double maxPoints;
+    private double minPoints;
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
-
-    private List<QuestionNoParentDTO> questions;
-
-    private SubjectNoParentDTO parent;
-
-    private List<SubjectNoParentDTO> children;
+    private List<QuestionDTO> questions;
 }
