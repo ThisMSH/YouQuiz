@@ -2,7 +2,7 @@ package com.youquiz.Services;
 
 import com.youquiz.DTO.AltDTO.AnswerAltDTO;
 import com.youquiz.Entities.Answer;
-import com.youquiz.Exceptions.ResourceAlreadyExists;
+import com.youquiz.Exceptions.ResourceAlreadyExistsException;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.AnswerRepository;
 import com.youquiz.Utils.Utilities;
@@ -27,7 +27,7 @@ public class AnswerService {
 
     public Answer createAnswer(Answer answer) {
         if (answerRepository.existsByAnswerIgnoreCase(answer.getAnswer())) {
-            throw new ResourceAlreadyExists("This answer already exists.");
+            throw new ResourceAlreadyExistsException("This answer already exists.");
         }
 
         return answerRepository.save(answer);

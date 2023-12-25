@@ -1,7 +1,6 @@
 package com.youquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
@@ -29,7 +28,6 @@ public class AnswerValidation {
     @Column(nullable = false)
     private double points;
 
-    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 

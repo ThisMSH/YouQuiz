@@ -1,6 +1,5 @@
 package com.youquiz.DTO.AltDTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.DTO.NoParentAltDTO.QuestionNoParentDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,16 +16,12 @@ public class LevelAltDTO {
 
     private String description;
 
-    @JsonProperty("max-points")
     private double maxPoints;
 
-    @JsonProperty("min-points")
     private double minPoints;
 
-    @JsonProperty("created-at")
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     private LocalDateTime updatedAt;
 
     private List<QuestionNoParentDTO> questions;

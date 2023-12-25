@@ -4,7 +4,7 @@ import com.youquiz.DTO.AltDTO.AnswerValidationAltDTO;
 import com.youquiz.DTO.AnswerValidationDTO;
 import com.youquiz.Entities.AnswerValidation;
 import com.youquiz.Enums.QuestionType;
-import com.youquiz.Exceptions.ResourceBadRequest;
+import com.youquiz.Exceptions.ResourceBadRequestException;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.AnswerRepository;
 import com.youquiz.Repositories.AnswerValidationRepository;
@@ -51,7 +51,7 @@ public class AnswerValidationService {
         if (!avList.isEmpty() && avList.get(0).getQuestion().getType() == QuestionType.SINGLE) {
             for (AnswerValidation av : avList) {
                 if (av.getPoints() > 0) {
-                    throw new ResourceBadRequest("Questions of type \"Single\" don't accept more than one correct answer.");
+                    throw new ResourceBadRequestException("Questions of type \"Single\" don't accept more than one correct answer.");
                 }
             }
         }

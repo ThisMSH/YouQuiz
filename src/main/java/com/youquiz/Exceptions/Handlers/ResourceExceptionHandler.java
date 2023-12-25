@@ -1,7 +1,7 @@
 package com.youquiz.Exceptions.Handlers;
 
-import com.youquiz.Exceptions.ResourceAlreadyExists;
-import com.youquiz.Exceptions.ResourceBadRequest;
+import com.youquiz.Exceptions.ResourceAlreadyExistsException;
+import com.youquiz.Exceptions.ResourceBadRequestException;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Exceptions.ResourceUnprocessableException;
 import com.youquiz.Utils.ResponseHandler;
@@ -17,13 +17,13 @@ public class ResourceExceptionHandler {
         return ResponseHandler.exception(e, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = {ResourceAlreadyExists.class})
-    public ResponseEntity<Object> handleResourceAlreadyExistsException(ResourceAlreadyExists e) {
+    @ExceptionHandler(value = {ResourceAlreadyExistsException.class})
+    public ResponseEntity<Object> handleResourceAlreadyExistsException(ResourceAlreadyExistsException e) {
         return ResponseHandler.exception(e, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(value = {ResourceBadRequest.class})
-    public ResponseEntity<Object> handleResourceBadRequestException(ResourceBadRequest e) {
+    @ExceptionHandler(value = {ResourceBadRequestException.class})
+    public ResponseEntity<Object> handleResourceBadRequestException(ResourceBadRequestException e) {
         return ResponseHandler.exception(e, HttpStatus.BAD_REQUEST);
     }
 

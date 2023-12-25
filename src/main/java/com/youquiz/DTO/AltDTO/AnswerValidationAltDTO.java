@@ -1,6 +1,5 @@
 package com.youquiz.DTO.AltDTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.DTO.NoParentAltDTO.AnswerNoParentDTO;
 import com.youquiz.DTO.NoParentAltDTO.QuestionNoParentDTO;
 import lombok.Data;
@@ -15,7 +14,6 @@ public class AnswerValidationAltDTO {
 
     private double points;
 
-    @JsonProperty("created-at")
     private LocalDateTime createdAt;
 
     private AnswerNoParentDTO answer;

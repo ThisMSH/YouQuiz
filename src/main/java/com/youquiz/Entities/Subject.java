@@ -27,11 +27,9 @@ public class Subject {
     @Column(nullable = false)
     private String title;
 
-    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

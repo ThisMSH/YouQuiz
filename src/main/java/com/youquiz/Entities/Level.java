@@ -2,7 +2,6 @@ package com.youquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -35,22 +34,18 @@ public class Level {
     @NotNull(message = "Max points is required.")
     @DecimalMin(value = "1", message = "Maximum points cannot be lower than 1.")
     @DecimalMax(value = "50.0", message = "Maximum points must be higher than 50.")
-    @JsonProperty("max-points")
     @Column(nullable = false)
     private double maxPoints;
 
     @NotNull(message = "Min points is required.")
     @DecimalMin(value = "1", message = "Minimum points cannot be lower than 1.")
     @DecimalMax(value = "50.0", message = "Minimum points must be higher than 50.")
-    @JsonProperty("min-points")
     @Column(nullable = false)
     private double minPoints;
 
-    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

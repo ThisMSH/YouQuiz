@@ -1,6 +1,5 @@
 package com.youquiz.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -17,6 +16,5 @@ public class SubjectDTO {
     @Size(max = 50, message = "Title cannot exceed 50 characters.")
     private String title;
 
-    @JsonProperty("parent-id")
     private Long parentId;
 }

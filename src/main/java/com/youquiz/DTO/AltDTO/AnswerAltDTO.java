@@ -1,6 +1,5 @@
 package com.youquiz.DTO.AltDTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.DTO.NoParentAltDTO.AnswerValidationNoParentDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,10 +14,8 @@ public class AnswerAltDTO {
 
     private String answer;
 
-    @JsonProperty("created-at")
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     private LocalDateTime updatedAt;
 
     private List<AnswerValidationNoParentDTO> answerValidations;

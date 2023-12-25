@@ -1,6 +1,5 @@
 package com.youquiz.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -18,10 +17,8 @@ public class AnswerValidationDTO {
     private double points;
 
     @NotNull(message = "Answer is required.")
-    @JsonProperty("answer-id")
     private Long answerId;
 
     @NotNull(message = "Question is required.")
-    @JsonProperty("question-id")
     private Long questionId;
 }
