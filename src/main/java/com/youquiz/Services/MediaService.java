@@ -10,10 +10,12 @@ import com.youquiz.Exceptions.StorageUnprocessableException;
 import com.youquiz.Repositories.MediaRepository;
 import com.youquiz.DAO.FileStorageDAO;
 import com.youquiz.Utils.ResponseHandler;
+import com.youquiz.Utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -59,11 +63,10 @@ public class MediaService implements FileStorageDAO {
             String extension = fileName.substring(fileName.lastIndexOf("."));
             String newFileName = uuid + extension;
             Path filePath = this.path.resolve(newFileName);
-            String fullPath = filePath.toString();
 
             Files.copy(file.getInputStream(), filePath);
 
-            return fullPath;
+            return newFileName;
         } catch (Exception e) {
             throw new StorageException("Failed to save the file: " + e.getMessage(), e);
         }
@@ -108,6 +111,24 @@ public class MediaService implements FileStorageDAO {
         Optional<Media> media = mediaRepository.findById(id);
 
         return media.orElseThrow(() -> new ResourceNotFoundException("Media not found."));
+    }
+
+    public Map<String, Object> fetchMedia(String mediaStr) {
+        Path mediaPath = Paths.get("storage/" + mediaStr);
+
+        try {
+            byte[] mediaBytes = Files.readAllBytes(mediaPath);
+            String ext = com.google.common.io.Files.getFileExtension(mediaStr);
+            MediaType mediaType = Utilities.getMediaType(ext);
+
+            Map<String, Object> media = new HashMap<>();
+            media.put("media", mediaBytes);
+            media.put("type", mediaType);
+
+            return media;
+        } catch (IOException e) {
+            throw new StorageException(e.getMessage());
+        }
     }
 
     public Integer deleteMedia(Long id) {

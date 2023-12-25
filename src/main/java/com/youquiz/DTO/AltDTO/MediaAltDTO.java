@@ -1,6 +1,5 @@
 package com.youquiz.DTO.AltDTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.DTO.NoParentAltDTO.QuestionNoParentDTO;
 import com.youquiz.Enums.MediaType;
 import lombok.Data;
@@ -19,10 +18,8 @@ public class MediaAltDTO {
 
     private MediaType type;
 
-    @JsonProperty("created-at")
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     private LocalDateTime updatedAt;
 
     private QuestionNoParentDTO question;

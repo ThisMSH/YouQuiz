@@ -1,7 +1,7 @@
 package com.youquiz.Services;
 
+import com.youquiz.DTO.AltDTO.AnswerValidationAltDTO;
 import com.youquiz.DTO.AltDTO.QuestionAltDTO;
-import com.youquiz.DTO.MediaDTO;
 import com.youquiz.DTO.NoParentAltDTO.AnswerValidationNoParentDTO;
 import com.youquiz.DTO.NoParentAltDTO.LevelNoParentDTO;
 import com.youquiz.DTO.NoParentAltDTO.MediaNoParentDTO;
@@ -23,10 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class QuestionService {
@@ -58,16 +57,16 @@ public class QuestionService {
 
         Question question = modelMapper.map(q, Question.class);
 
-        Question createdQuestion = questionRepository.save(question);
+        return questionRepository.save(question);
 
-        if (q.getMediaDTOList() != null) {
-            for (MediaDTO m : q.getMediaDTOList()) {
-                m.setQuestionId(createdQuestion.getId());
-                mediaService.createMedia(m);
-            }
-        }
+//        if (q.getMediaDTOList() != null) {
+//            for (MediaDTO m : q.getMediaDTOList()) {
+//                m.setQuestionId(createdQuestion.getId());
+//                mediaService.createMedia(m);
+//            }
+//        }
 
-        return questionRepository.findById(createdQuestion.getId()).get();
+//        return questionRepository.findById(createdQuestion.getId()).get();
     }
 
     public QuestionAltDTO getQuestion(Long id) {
@@ -94,13 +93,22 @@ public class QuestionService {
 
         if (!avNoParent.isEmpty()) {
             List<AnswerValidation> av = avRepository.findAllByQuestionId(q.getId());
+            List<AnswerValidationAltDTO> avAltDTO = new ArrayList<>();
 
             for (int i = 0; i < avNoParent.size(); i++) {
                 avNoParent.get(i).setQuestionId(av.get(i).getQuestion().getId());
                 avNoParent.get(i).setAnswerId(av.get(i).getAnswer().getId());
+
+                AnswerValidation answerValidation = avRepository.findById(av.get(i).getId()).orElseThrow(() -> new ResourceNotFoundException("The association between the answer and question was not found."));
+
+                avAltDTO.add(modelMapper.map(
+                    answerValidation,
+                    AnswerValidationAltDTO.class
+                ));
             }
 
             q.setAnswerValidations(avNoParent);
+            q.setAnswerValidationsWithParent(avAltDTO);
         }
 
         q.setLevel(lvlNoParent);

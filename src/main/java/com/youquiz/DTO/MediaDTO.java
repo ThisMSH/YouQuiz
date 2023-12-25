@@ -1,6 +1,5 @@
 package com.youquiz.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.Enums.MediaType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class MediaDTO {
     @NotBlank(message = "Title is required.")
-    @Size(max = 255, message = "The title cannot exceed 255 characters.")
+    @Size(max = 255, message = "Title cannot exceed 255 characters.")
     private String title;
 
     @NotNull(message = "Media type is required.")

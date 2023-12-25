@@ -1,6 +1,5 @@
 package com.youquiz.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.Enums.QuestionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,13 +27,8 @@ public class QuestionDTO {
     private QuestionType type;
 
     @NotNull(message = "You must assign a level to this question.")
-    @JsonProperty("level-id")
     private Long levelId;
 
     @NotNull(message = "You must assign a subject to this question.")
-    @JsonProperty("subject-id")
     private Long subjectId;
-
-    @JsonProperty("medias")
-    private List<MediaDTO> mediaDTOList;
 }

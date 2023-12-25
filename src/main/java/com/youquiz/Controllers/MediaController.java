@@ -2,22 +2,18 @@ package com.youquiz.Controllers;
 
 import com.youquiz.DTO.MediaDTO;
 import com.youquiz.Entities.Media;
-import com.youquiz.Entities.Question;
-import com.youquiz.Exceptions.StorageException;
-import com.youquiz.Exceptions.StorageExpectationFailed;
 import com.youquiz.Services.MediaService;
 import com.youquiz.Utils.ResponseHandler;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.nio.file.Path;
+import java.util.Map;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/medias")
 public class MediaController {
@@ -37,6 +33,13 @@ public class MediaController {
             HttpStatus.OK,
             media
         );
+    }
+
+    @GetMapping("/get/{imageName:.+}")
+    public ResponseEntity<byte[]> fetchMedia(@PathVariable String imageName) {
+        Map<String, Object> mediaObj = mediaService.fetchMedia(imageName);
+
+        return ResponseEntity.ok().contentType((MediaType) mediaObj.get("type")).body((byte[]) mediaObj.get("media"));
     }
 
     @PostMapping("/add")

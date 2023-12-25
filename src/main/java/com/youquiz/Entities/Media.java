@@ -36,11 +36,9 @@ public class Media {
     @Column(nullable = false)
     private MediaType type;
 
-    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

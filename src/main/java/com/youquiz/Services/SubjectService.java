@@ -1,11 +1,8 @@
 package com.youquiz.Services;
 
 import com.youquiz.DTO.AltDTO.SubjectAltDTO;
-import com.youquiz.DTO.NoParentAltDTO.QuestionNoParentDTO;
-import com.youquiz.DTO.NoParentAltDTO.SubjectNoParentDTO;
 import com.youquiz.DTO.SubjectDTO;
 import com.youquiz.Entities.Subject;
-import com.youquiz.Exceptions.ResourceBadRequest;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.SubjectRepository;
 import com.youquiz.Utils.Utilities;
@@ -15,9 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SubjectService {

@@ -1,6 +1,5 @@
 package com.youquiz.DTO.AltDTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.DTO.NoParentAltDTO.AnswerValidationNoParentDTO;
 import com.youquiz.DTO.NoParentAltDTO.LevelNoParentDTO;
 import com.youquiz.DTO.NoParentAltDTO.MediaNoParentDTO;
@@ -21,18 +20,14 @@ public class QuestionAltDTO {
 
     private String description;
 
-    @JsonProperty("answers-count")
     private byte answersCount;
 
-    @JsonProperty("correct-answers-count")
     private byte correctAnswersCount;
 
     private QuestionType type;
 
-    @JsonProperty("created-at")
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     private LocalDateTime updatedAt;
 
     private LevelNoParentDTO level;
@@ -42,4 +37,6 @@ public class QuestionAltDTO {
     private List<MediaNoParentDTO> medias;
 
     private List<AnswerValidationNoParentDTO> answerValidations;
+
+    private List<AnswerValidationAltDTO> answerValidationsWithParent;
 }

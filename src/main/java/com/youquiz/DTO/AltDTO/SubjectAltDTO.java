@@ -1,6 +1,5 @@
 package com.youquiz.DTO.AltDTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.youquiz.DTO.NoParentAltDTO.QuestionNoParentDTO;
 import com.youquiz.DTO.NoParentAltDTO.SubjectNoParentDTO;
 import lombok.Data;
@@ -16,10 +15,8 @@ public class SubjectAltDTO {
 
     private String title;
 
-    @JsonProperty("created-at")
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     private LocalDateTime updatedAt;
 
     private List<QuestionNoParentDTO> questions;

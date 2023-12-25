@@ -1,7 +1,6 @@
 package com.youquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.youquiz.Enums.QuestionType;
 import jakarta.persistence.*;
@@ -36,11 +35,9 @@ public class Question {
     private String description;
 
     @Column(nullable = false)
-    @JsonProperty("answers-count")
     private byte answersCount = 0;
 
     @Column(nullable = false)
-    @JsonProperty("correct-answers-count")
     private byte correctAnswersCount = 0;
 
     @NotNull(message = "Question type is required.")
@@ -48,11 +45,9 @@ public class Question {
     @Column(nullable = false)
     private QuestionType type;
 
-    @JsonProperty("created-at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated-at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

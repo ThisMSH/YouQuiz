@@ -2,8 +2,8 @@ package com.youquiz.Services;
 
 import com.youquiz.DTO.AltDTO.LevelAltDTO;
 import com.youquiz.Entities.Level;
-import com.youquiz.Exceptions.ResourceAlreadyExists;
-import com.youquiz.Exceptions.ResourceBadRequest;
+import com.youquiz.Exceptions.ResourceAlreadyExistsException;
+import com.youquiz.Exceptions.ResourceBadRequestException;
 import com.youquiz.Exceptions.ResourceNotFoundException;
 import com.youquiz.Repositories.LevelRepository;
 import com.youquiz.Utils.Utilities;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,15 +28,15 @@ public class LevelService {
 
     public Level createLevel(Level level) {
         if (levelRepository.existsByTitleIgnoreCase(level.getTitle())) {
-            throw new ResourceAlreadyExists("The level \"" + level.getTitle() + "\" already exists.");
+            throw new ResourceAlreadyExistsException("The level \"" + level.getTitle() + "\" already exists.");
         }
 
         if (level.getMaxPoints() <= level.getMinPoints()) {
-            throw new ResourceBadRequest("Minimum points cannot be higher or equal to maximum points.");
+            throw new ResourceBadRequestException("Minimum points cannot be higher or equal to maximum points.");
         }
 
         if (level.getMaxPoints() == 0 || level.getMinPoints() == 0) {
-            throw new ResourceBadRequest("The points cannot equal 0.");
+            throw new ResourceBadRequestException("The points cannot equal 0.");
         }
 
         return levelRepository.save(level);
@@ -83,11 +82,11 @@ public class LevelService {
         Level level = levelRepository.findById(l.getId()).orElseThrow(() -> new ResourceNotFoundException("The level does not exist."));
 
         if (l.getMaxPoints() <= l.getMinPoints()) {
-            throw new ResourceBadRequest("Minimum points cannot be higher or equal to maximum points.");
+            throw new ResourceBadRequestException("Minimum points cannot be higher or equal to maximum points.");
         }
 
         if (l.getMaxPoints() == 0 || l.getMinPoints() == 0) {
-            throw new ResourceBadRequest("The points cannot equal 0.");
+            throw new ResourceBadRequestException("The points cannot equal 0.");
         }
 
         level.setTitle(l.getTitle());
