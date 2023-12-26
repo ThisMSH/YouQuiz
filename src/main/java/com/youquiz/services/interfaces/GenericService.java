@@ -9,5 +9,5 @@ public interface GenericService<T, R, ID> {
     T update(R request);
     T delete(ID id);
     T get(ID id);
-    Page<T> getAll(Map<?, ?> params);
+    Page<T> getAll(Map<String, Object> params);
 }

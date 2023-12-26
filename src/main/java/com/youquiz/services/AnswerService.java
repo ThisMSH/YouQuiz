@@ -65,23 +65,12 @@ public class AnswerService implements IAnswerService {
     }
 
     @Override
-    public Page<AnswerDTO> getAll(Map<?, ?> params) {
-        Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
+    public Page<AnswerDTO> getAll(Map<String, Object> params) {
+        String text = (String) params.get("text");
+        Pageable pageable = Utilities.managePagination(params);
 
         Page<Answer> answers = answerRepository.findAllByAnswerLikeIgnoreCase("%" + text + "%", pageable);
 
-        Page<AnswerDTO> answerDTOs = answers.map(an -> modelMapper.map(an, AnswerDTO.class));
-
-        if (!answers.hasContent()) {
-            String message = "";
-            if (answers.getTotalPages() > 0 && (page + 1) > answers.getTotalPages()) {
-                message = "No answers found in page " + (page + 1) + ".";
-            } else {
-                message = "No answer was found.";
-            }
-            throw new ResourceNotFoundException(message);
-        }
-
-        return answerDTOs;
+        return answers.map(an -> modelMapper.map(an, AnswerDTO.class));
     }
 }
