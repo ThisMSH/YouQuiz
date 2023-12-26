@@ -1,5 +1,6 @@
 package com.youquiz.services;
 
+import com.youquiz.dto.requestdto.AnswerValidationRequestDTO;
 import com.youquiz.dto.responsedto.AnswerValidationDTO;
 import com.youquiz.entities.AnswerValidation;
 import com.youquiz.enums.QuestionType;
@@ -8,17 +9,19 @@ import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.AnswerRepository;
 import com.youquiz.repositories.AnswerValidationRepository;
 import com.youquiz.repositories.QuestionRepository;
+import com.youquiz.services.interfaces.IAnswerValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class AnswerValidationService {
+public class AnswerValidationService implements IAnswerValidationService {
     private final AnswerValidationRepository avRepository;
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
@@ -32,7 +35,8 @@ public class AnswerValidationService {
         this.modelMapper = modelMapper;
     }
 
-    public AnswerValidation assignAnswerToQuestion(com.youquiz.dto.AnswerValidationDTO a) {
+    @Override
+    public AnswerValidationDTO create(AnswerValidationRequestDTO a) {
         if (!questionRepository.existsById(a.getQuestionId())) {
             throw new ResourceNotFoundException("The question does not exist.");
         }
@@ -49,34 +53,52 @@ public class AnswerValidationService {
 
         if (!avList.isEmpty() && avList.get(0).getQuestion().getType() == QuestionType.SINGLE) {
             for (AnswerValidation av : avList) {
-                if (av.getPoints() > 0) {
+                if (av.getPoints() > 0 && a.getPoints() > 0) {
                     throw new ResourceBadRequestException("Questions of type \"Single\" don't accept more than one correct answer.");
                 }
             }
         }
 
-        AnswerValidation answer = modelMapper.map(a, AnswerValidation.class);
+        AnswerValidation av = modelMapper.map(a, AnswerValidation.class);
 
-        return avRepository.save(answer);
+        return modelMapper.map(avRepository.save(av), AnswerValidationDTO.class);
     }
 
-    public AnswerValidation getAssignedAnswer(Long questionId, Long answerId) {
-        Optional<AnswerValidation> av = avRepository.findByQuestionIdAndAnswerId(questionId, answerId);
+    @Override
+    public AnswerValidationDTO delete(Long id) {
+        AnswerValidation av = avRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Association not found between the provided answer and question."));
 
-        return av.orElseThrow(() -> new ResourceNotFoundException("The association between the answer and question was not found."));
+        avRepository.deleteById(id);
+
+        return modelMapper.map(av, AnswerValidationDTO.class);
     }
 
+    @Override
     @Transactional
-    public Integer deleteAnswerValidation(Long questionId, Long answerId) {
-        if (!avRepository.existsByQuestionIdAndAnswerId(questionId, answerId)) {
-            throw new ResourceNotFoundException("No association found between the provided answer and question.");
-        }
+    public AnswerValidationDTO delete(Long questionId, Long answerId) {
+        AnswerValidation av = avRepository.findByQuestionIdAndAnswerId(questionId, answerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Association not found between the provided answer and question."));
 
         avRepository.deleteByQuestionIdAndAnswerId(questionId, answerId);
 
-        return 1;
+        return modelMapper.map(av, AnswerValidationDTO.class);
     }
 
+    @Override
+    public AnswerValidationDTO get(Long aLong) {
+        return null;
+    }
+
+    @Override
+    public AnswerValidationDTO get(Long questionId, Long answerId) {
+        AnswerValidation av = avRepository.findByQuestionIdAndAnswerId(questionId, answerId)
+            .orElseThrow(() -> new ResourceNotFoundException("The association between the answer and question was not found."));
+
+        return modelMapper.map(av, AnswerValidationDTO.class);
+    }
+
+    @Override
     public List<AnswerValidationDTO> getAssignedAnswersByQuestion(Long questionId) {
         if (!questionRepository.existsById(questionId)) {
             throw new ResourceNotFoundException("The question does not exist.");
@@ -87,6 +109,7 @@ public class AnswerValidationService {
             .collect(Collectors.toList());
     }
 
+    @Override
     public List<AnswerValidationDTO> getAssignedAnswersByAnswer(Long answerId) {
         if (!answerRepository.existsById(answerId)) {
             throw new ResourceNotFoundException("The answer does not exist.");
@@ -95,5 +118,15 @@ public class AnswerValidationService {
         return avRepository.findAllByAnswerId(answerId).stream()
             .map(av -> modelMapper.map(av, AnswerValidationDTO.class))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public AnswerValidationDTO update(AnswerValidationRequestDTO request) {
+        return null;
+    }
+
+    @Override
+    public Page<AnswerValidationDTO> getAll(Map<String, Object> params) {
+        return null;
     }
 }
