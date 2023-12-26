@@ -1,18 +1,23 @@
 package com.youquiz.services;
 
-import com.youquiz.dto.responsedto.AnswerValidationDTO;
-import com.youquiz.dto.responsedto.QuestionDTO;
-import com.youquiz.dto.requestdto.AnswerValidationRequestDTO;
+import com.youquiz.dto.requestdto.AnswerRequestDTO;
 import com.youquiz.dto.requestdto.LevelRequestDTO;
-import com.youquiz.dto.requestdto.MediaRequestDTO;
+import com.youquiz.dto.requestdto.QuestionRequestDTO;
 import com.youquiz.dto.requestdto.SubjectRequestDTO;
+import com.youquiz.dto.responsedto.AnswerValidationDTO;
+import com.youquiz.dto.responsedto.MediaDTO;
+import com.youquiz.dto.responsedto.QuestionDTO;
 import com.youquiz.entities.AnswerValidation;
 import com.youquiz.entities.Level;
 import com.youquiz.entities.Question;
 import com.youquiz.entities.Subject;
 import com.youquiz.enums.QuestionType;
 import com.youquiz.exceptions.ResourceNotFoundException;
-import com.youquiz.repositories.*;
+import com.youquiz.repositories.AnswerValidationRepository;
+import com.youquiz.repositories.LevelRepository;
+import com.youquiz.repositories.QuestionRepository;
+import com.youquiz.repositories.SubjectRepository;
+import com.youquiz.services.interfaces.IQuestionService;
 import com.youquiz.specifications.QuestionSpecification;
 import com.youquiz.utils.Utilities;
 import org.modelmapper.ModelMapper;
@@ -22,114 +27,143 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class QuestionService {
+public class QuestionService implements IQuestionService {
     private final QuestionRepository questionRepository;
-    private final MediaService mediaService;
     private final ModelMapper modelMapper;
     private final LevelRepository levelRepository;
     private final SubjectRepository subjectRepository;
     private final AnswerValidationRepository avRepository;
 
     @Autowired
-    public QuestionService(QuestionRepository questionRepository, MediaService mediaService, ModelMapper modelMapper, LevelRepository levelRepository, SubjectRepository subjectRepository, AnswerValidationRepository avRepository) {
+    public QuestionService(
+        QuestionRepository questionRepository,
+        ModelMapper modelMapper,
+        LevelRepository levelRepository,
+        SubjectRepository subjectRepository,
+        AnswerValidationRepository avRepository
+    ) {
         this.questionRepository = questionRepository;
-        this.mediaService = mediaService;
         this.modelMapper = modelMapper;
         this.levelRepository = levelRepository;
         this.subjectRepository = subjectRepository;
         this.avRepository = avRepository;
     }
 
-    public Question createQuestion(com.youquiz.dto.QuestionDTO q) {
-        if (!levelRepository.existsById(q.getLevelId())) {
-            throw new ResourceNotFoundException("The level does not exist.");
+    @Override
+    public QuestionDTO create(QuestionRequestDTO request) {
+        if (!levelRepository.existsById(request.getLevelId())) {
+            throw new ResourceNotFoundException("Level not found.");
         }
 
-        if (!subjectRepository.existsById(q.getSubjectId())) {
-            throw new ResourceNotFoundException("The subject does not exist.");
+        if (!subjectRepository.existsById(request.getSubjectId())) {
+            throw new ResourceNotFoundException("Subject not found.");
         }
 
-        Question question = modelMapper.map(q, Question.class);
+        Question question = questionRepository.save(modelMapper.map(request, Question.class));
 
-        return questionRepository.save(question);
-
-//        if (q.getMediaDTOList() != null) {
-//            for (MediaDTO m : q.getMediaDTOList()) {
-//                m.setQuestionId(createdQuestion.getId());
-//                mediaService.createMedia(m);
-//            }
-//        }
-
-//        return questionRepository.findById(createdQuestion.getId()).get();
+        return modelMapper.map(question, QuestionDTO.class);
     }
 
-    public QuestionDTO getQuestion(Long id) {
-        Question question = questionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Question not found."));
+    @Override
+    public QuestionDTO update(QuestionRequestDTO request) {
+        Question question = questionRepository.findById(request.getId())
+            .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
+
+        if (!levelRepository.existsById(request.getLevelId())) {
+            throw new ResourceNotFoundException("Level not found.");
+        }
+
+        if (!subjectRepository.existsById(request.getSubjectId())) {
+            throw new ResourceNotFoundException("Subject not found.");
+        }
+
+        Level level = new Level();
+        level.setId(request.getLevelId());
+
+        Subject subject = new Subject();
+        subject.setId(request.getSubjectId());
+
+        try {
+            question.setType(QuestionType.valueOf(request.getType().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Question type is not valid.");
+        }
+
+        question.setQuestion(request.getQuestion());
+        question.setDescription(request.getDescription());
+        question.setLevel(level);
+        question.setSubject(subject);
+
+        Question updatedQuestion = questionRepository.save(question);
+
+        return modelMapper.map(updatedQuestion, QuestionDTO.class);
+    }
+
+    @Override
+    public QuestionDTO delete(Long id) {
+        Question question = questionRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
+
+        questionRepository.deleteById(id);
+
+        return modelMapper.map(question, QuestionDTO.class);
+    }
+
+    @Override
+    public QuestionDTO get(Long id) {
+        Question question = questionRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
 
         QuestionDTO q = modelMapper.map(question, QuestionDTO.class);
 
-        LevelRequestDTO lvlNoParent = q.getLevel();
-        Level level = levelRepository.findById(question.getLevel().getId()).get();
-        lvlNoParent.setQuestionIds(level.getQuestions() != null ? level.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
+        LevelRequestDTO lvl = q.getLevel();
+        Level level = levelRepository.findById(question.getLevel().getId()).orElse(null);
+        lvl.setQuestionIds(level != null && level.getQuestions() != null ? level.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
 
-        SubjectRequestDTO subNoParent = q.getSubject();
-        Subject subject = subjectRepository.findById(question.getSubject().getId()).get();
-        subNoParent.setParentId(subject.getParent() != null ? subject.getParent().getId() : null);
-        subNoParent.setChildrenIds(subject.getChildren() != null ? subject.getChildren().stream().map(Subject::getId).collect(Collectors.toList()) : null);
-        subNoParent.setQuestionIds(subject.getQuestions() != null ? subject.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
+        SubjectRequestDTO subj = q.getSubject();
+        Subject subject = subjectRepository.findById(question.getSubject().getId()).orElse(null);
+        subj.setParentId(subject != null && subject.getParent() != null ? subject.getParent().getId() : null);
+        subj.setChildrenIds(subject != null && subject.getChildren() != null ? subject.getChildren().stream().map(Subject::getId).collect(Collectors.toList()) : null);
+        subj.setQuestionIds(subject != null && subject.getQuestions() != null ? subject.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
 
-        List<MediaRequestDTO> mediaNoParent = q.getMedias();
-        mediaNoParent = mediaNoParent.stream()
-            .peek(media -> media.setQuestionId(q.getId()))
+        List<MediaDTO> media = q.getMedias();
+        media = media.stream()
+            .peek(m -> m.setQuestion(modelMapper.map(question, QuestionRequestDTO.class)))
             .collect(Collectors.toList());
 
-        List<AnswerValidationRequestDTO> avNoParent = q.getAnswerValidations();
+        List<AnswerValidationDTO> avDto = q.getAnswerValidations();
 
-        if (!avNoParent.isEmpty()) {
+        if (!avDto.isEmpty()) {
             List<AnswerValidation> av = avRepository.findAllByQuestionId(q.getId());
-            List<AnswerValidationDTO> avAltDTO = new ArrayList<>();
 
-            for (int i = 0; i < avNoParent.size(); i++) {
-                avNoParent.get(i).setQuestionId(av.get(i).getQuestion().getId());
-                avNoParent.get(i).setAnswerId(av.get(i).getAnswer().getId());
-
-                AnswerValidation answerValidation = avRepository.findById(av.get(i).getId()).orElseThrow(() -> new ResourceNotFoundException("The association between the answer and question was not found."));
-
-                avAltDTO.add(modelMapper.map(
-                    answerValidation,
-                    AnswerValidationDTO.class
-                ));
+            for (int i = 0; i < avDto.size(); i++) {
+                avDto.get(i).setQuestion(modelMapper.map(av.get(i).getQuestion(), QuestionRequestDTO.class));
+                avDto.get(i).setAnswer(modelMapper.map(av.get(i).getAnswer(), AnswerRequestDTO.class));
             }
 
-            q.setAnswerValidations(avNoParent);
-            q.setAnswerValidationsWithParent(avAltDTO);
+            q.setAnswerValidations(avDto);
         }
 
-        q.setLevel(lvlNoParent);
-        q.setSubject(subNoParent);
-        q.setMedias(mediaNoParent);
+        q.setLevel(lvl);
+        q.setSubject(subj);
+        q.setMedias(media);
 
         return q;
     }
 
-    public Integer deleteQuestion(Long id) {
-        if (!questionRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Question not found.");
-        }
-
-        questionRepository.deleteById(id);
-
-        return 1;
-    }
-
-    public Page<QuestionDTO> getAllQuestionsByFilters(String question, String type, Long levelId, Long subjectId, int page, int size, String sortBy, String sortOrder) {
+    @Override
+    public Page<QuestionDTO> getAll(Map<String, Object> params) {
+        String question = (String) params.get("question");
+        String type = (String) params.get("type");
+        Long levelId = (Long) params.get("level");
+        Long subjectId = (Long) params.get("subject");
         QuestionType questionType = null;
-        Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
+        Pageable pageable = Utilities.managePagination(params);
 
         if (!type.isBlank()) {
             try {
@@ -147,44 +181,6 @@ public class QuestionService {
             pageable
         );
 
-        Page<QuestionDTO> questionDTOs = questions.map(q -> modelMapper.map(q, QuestionDTO.class));
-
-        if (!questions.hasContent()) {
-            String message = "";
-            if (questions.getTotalPages() > 0 && (page + 1) > questions.getTotalPages()) {
-                message = "No questions found in the page " + (page + 1) + ".";
-            } else {
-                message = "No question was found.";
-            }
-            throw new ResourceNotFoundException(message);
-        }
-
-        return questionDTOs;
-    }
-
-    public Question updateQuestion(com.youquiz.dto.QuestionDTO q) {
-        Question question = questionRepository.findById(q.getId()).orElseThrow(() -> new ResourceNotFoundException("The question does not exist."));
-
-        if (!levelRepository.existsById(q.getLevelId())) {
-            throw new ResourceNotFoundException("The level does not exist, please select a valid level.");
-        }
-
-        if (!subjectRepository.existsById(q.getSubjectId())) {
-            throw new ResourceNotFoundException("The subject does not exist, please select a valid subject.");
-        }
-
-        Level level = new Level();
-        level.setId(q.getLevelId());
-
-        Subject subject = new Subject();
-        subject.setId(q.getSubjectId());
-
-        question.setQuestion(q.getQuestion());
-        question.setDescription(q.getDescription());
-        question.setType(q.getType());
-        question.setLevel(level);
-        question.setSubject(subject);
-
-        return questionRepository.save(question);
+        return questions.map(q -> modelMapper.map(q, QuestionDTO.class));
     }
 }
