@@ -1,11 +1,13 @@
 package com.youquiz.services;
 
+import com.youquiz.dto.requestdto.LevelRequestDTO;
 import com.youquiz.dto.responsedto.LevelDTO;
 import com.youquiz.entities.Level;
 import com.youquiz.exceptions.ResourceAlreadyExistsException;
 import com.youquiz.exceptions.ResourceBadRequestException;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.LevelRepository;
+import com.youquiz.services.interfaces.ILevelService;
 import com.youquiz.utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class LevelService {
+public class LevelService implements ILevelService {
     private final LevelRepository levelRepository;
     private final ModelMapper modelMapper;
 
@@ -26,74 +29,62 @@ public class LevelService {
         this.modelMapper = modelMapper;
     }
 
-    public Level createLevel(Level level) {
-        if (levelRepository.existsByTitleIgnoreCase(level.getTitle())) {
-            throw new ResourceAlreadyExistsException("The level \"" + level.getTitle() + "\" already exists.");
+    @Override
+    public LevelDTO create(LevelRequestDTO request) {
+        if (levelRepository.existsByTitleIgnoreCase(request.getTitle())) {
+            throw new ResourceAlreadyExistsException("The level \"" + request.getTitle() + "\" already exists.");
         }
 
-        if (level.getMaxPoints() <= level.getMinPoints()) {
+        if (request.getMaxPoints() <= request.getMinPoints()) {
             throw new ResourceBadRequestException("Minimum points cannot be higher or equal to maximum points.");
         }
 
-        if (level.getMaxPoints() == 0 || level.getMinPoints() == 0) {
-            throw new ResourceBadRequestException("The points cannot equal 0.");
-        }
+        Level level = levelRepository.save(modelMapper.map(request, Level.class));
 
-        return levelRepository.save(level);
+        return modelMapper.map(level, LevelDTO.class);
     }
 
-    public Level getLevel(Long id) {
-        Optional<Level> level = levelRepository.findById(id);
+    @Override
+    public LevelDTO update(LevelRequestDTO request) {
+        Level level = levelRepository.findById(request.getId()).orElseThrow(() -> new ResourceNotFoundException("Level not found."));
 
-        return level.orElseThrow(() -> new ResourceNotFoundException("Level not found."));
+        if (request.getMaxPoints() <= request.getMinPoints()) {
+            throw new ResourceBadRequestException("Minimum points cannot be higher or equal to maximum points.");
+        }
+
+        level.setTitle(request.getTitle());
+        level.setDescription(request.getDescription());
+        level.setMaxPoints(request.getMaxPoints());
+        level.setMinPoints(request.getMinPoints());
+
+        Level updatedLevel = levelRepository.save(level);
+
+        return modelMapper.map(updatedLevel, LevelDTO.class);
     }
 
-    public Integer deleteLevel(Long id) {
-        if (!levelRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Level not found.");
-        }
+    @Override
+    public LevelDTO delete(Long id) {
+        Level level = levelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Level not found."));
 
         levelRepository.deleteById(id);
 
-        return 1;
+        return modelMapper.map(level, LevelDTO.class);
     }
 
-    public Page<LevelDTO> getAllLevels(String title, int page, int size, String sortBy, String sortOrder) {
-        Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
+    @Override
+    public LevelDTO get(Long id) {
+        Level level = levelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Level not found."));
+
+        return modelMapper.map(level, LevelDTO.class);
+    }
+
+    @Override
+    public Page<LevelDTO> getAll(Map<String, Object> params) {
+        String title = (String) params.get("title");
+        Pageable pageable = Utilities.managePagination(params);
 
         Page<Level> levels = levelRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
 
-        Page<LevelDTO> levelDTOs = levels.map(lvl -> modelMapper.map(lvl, LevelDTO.class));
-
-        if (!levels.hasContent()) {
-            String message = "";
-            if (levels.getTotalPages() > 0 && (page + 1) > levels.getTotalPages()) {
-                message = "No levels found in page " + (page + 1) + ".";
-            } else {
-                message = "No level was found.";
-            }
-            throw new ResourceNotFoundException(message);
-        }
-
-        return levelDTOs;
-    }
-
-    public Level updateLevel(Level l) {
-        Level level = levelRepository.findById(l.getId()).orElseThrow(() -> new ResourceNotFoundException("The level does not exist."));
-
-        if (l.getMaxPoints() <= l.getMinPoints()) {
-            throw new ResourceBadRequestException("Minimum points cannot be higher or equal to maximum points.");
-        }
-
-        if (l.getMaxPoints() == 0 || l.getMinPoints() == 0) {
-            throw new ResourceBadRequestException("The points cannot equal 0.");
-        }
-
-        level.setTitle(l.getTitle());
-        level.setDescription(l.getDescription());
-        level.setMaxPoints(l.getMaxPoints());
-        level.setMinPoints(l.getMinPoints());
-
-        return levelRepository.save(level);
+        return levels.map(lvl -> modelMapper.map(lvl, LevelDTO.class));
     }
 }

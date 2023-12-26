@@ -30,6 +30,7 @@ public class Utilities<T, C, ID> {
         if (!sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) && !sortOrder.equalsIgnoreCase(Sort.Direction.DESC.name())) {
             throw new ResourceBadRequestException("Please make sure to choose either ascending or descending order.");
         }
+
         Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name())
             ? Sort.by(sortBy).ascending()
             : Sort.by(sortBy).descending();
@@ -39,7 +40,6 @@ public class Utilities<T, C, ID> {
 
     public Page<T> getAllContents(Map<String, Object> params, Class<T> targetClass) {
         Pageable pageable = managePagination(params);
-
         Page<C> contents = repository.findAll(pageable);
 
         return contents.map(content -> modelMapper.map(content, targetClass));
