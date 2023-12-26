@@ -1,10 +1,13 @@
 package com.youquiz.configuration;
 
-import com.youquiz.dto.AnswerValidationDTO;
+import com.youquiz.dto.requestdto.AnswerValidationRequestDTO;
 import com.youquiz.dto.requestdto.MediaFileRequestDTO;
-import com.youquiz.dto.QuestionDTO;
-import com.youquiz.dto.SubjectDTO;
-import com.youquiz.entities.*;
+import com.youquiz.dto.requestdto.QuestionRequestDTO;
+import com.youquiz.dto.requestdto.SubjectRequestDTO;
+import com.youquiz.entities.AnswerValidation;
+import com.youquiz.entities.Media;
+import com.youquiz.entities.Question;
+import com.youquiz.entities.Subject;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -17,34 +20,34 @@ public class Beans {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        modelMapper.typeMap(QuestionDTO.class, Question.class)
+        modelMapper.typeMap(QuestionRequestDTO.class, Question.class)
             .addMappings(mapper -> {
                 mapper.map(
-                    QuestionDTO::getLevelId,
+                    QuestionRequestDTO::getLevelId,
                     (dest, id) -> dest.getLevel().setId((Long) id)
                 );
                 mapper.map(
-                    QuestionDTO::getSubjectId,
+                    QuestionRequestDTO::getSubjectId,
                     (dest, id) -> dest.getSubject().setId((Long) id)
                 );
             });
 
-        modelMapper.typeMap(SubjectDTO.class, Subject.class)
+        modelMapper.typeMap(SubjectRequestDTO.class, Subject.class)
             .addMappings(mapper -> {
                 mapper.map(
-                    SubjectDTO::getParentId,
+                    SubjectRequestDTO::getParentId,
                     (dest, id) -> dest.getParent().setId((Long) id)
                 );
             });
 
-        modelMapper.typeMap(AnswerValidationDTO.class, AnswerValidation.class)
+        modelMapper.typeMap(AnswerValidationRequestDTO.class, AnswerValidation.class)
             .addMappings(mapper -> {
                 mapper.map(
-                    AnswerValidationDTO::getAnswerId,
+                    AnswerValidationRequestDTO::getAnswerId,
                     (dest, id) -> dest.getAnswer().setId((Long) id)
                 );
                 mapper.map(
-                    AnswerValidationDTO::getQuestionId,
+                    AnswerValidationRequestDTO::getQuestionId,
                     (dest, id) -> dest.getQuestion().setId((Long) id)
                 );
             });
