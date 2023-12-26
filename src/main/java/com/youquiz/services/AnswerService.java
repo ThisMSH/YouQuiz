@@ -1,10 +1,12 @@
 package com.youquiz.services;
 
+import com.youquiz.dto.requestdto.AnswerRequestDTO;
 import com.youquiz.dto.responsedto.AnswerDTO;
 import com.youquiz.entities.Answer;
 import com.youquiz.exceptions.ResourceAlreadyExistsException;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.AnswerRepository;
+import com.youquiz.services.interfaces.IAnswerService;
 import com.youquiz.utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.Map;
 
 @Service
-public class AnswerService {
+public class AnswerService implements IAnswerService {
     private final AnswerRepository answerRepository;
     private final ModelMapper modelMapper;
 
@@ -25,31 +27,45 @@ public class AnswerService {
         this.modelMapper = modelMapper;
     }
 
-    public Answer createAnswer(Answer answer) {
-        if (answerRepository.existsByAnswerIgnoreCase(answer.getAnswer())) {
+    @Override
+    public AnswerDTO create(AnswerRequestDTO request) {
+        if (answerRepository.existsByAnswerIgnoreCase(request.getAnswer())) {
             throw new ResourceAlreadyExistsException("This answer already exists.");
         }
 
-        return answerRepository.save(answer);
+        Answer mappedAnswer = modelMapper.map(request, Answer.class);
+        Answer createdAnswer = answerRepository.save(mappedAnswer);
+
+        return modelMapper.map(createdAnswer, AnswerDTO.class);
     }
 
-    public Answer getAnswer(Long id) {
-        Optional<Answer> answer = answerRepository.findById(id);
+    @Override
+    public AnswerDTO update(AnswerRequestDTO request) {
+        Answer answer = answerRepository.findById(request.getId()).orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
-        return answer.orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+        answer.setAnswer(request.getAnswer());
+
+        return modelMapper.map(answerRepository.save(answer), AnswerDTO.class);
     }
 
-    public Integer deleteAnswer(Long id) {
-        if (!answerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Answer not found.");
-        }
+    @Override
+    public AnswerDTO get(Long id) {
+        Answer answer = answerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+
+        return modelMapper.map(answer, AnswerDTO.class);
+    }
+
+    @Override
+    public AnswerDTO delete(Long id) {
+        Answer answer = answerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
         answerRepository.deleteById(id);
 
-        return 1;
+        return modelMapper.map(answer, AnswerDTO.class);
     }
 
-    public Page<AnswerDTO> getAllAnswers(String text, int page, int size, String sortBy, String sortOrder) {
+    @Override
+    public Page<AnswerDTO> getAll(Map<?, ?> params) {
         Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
 
         Page<Answer> answers = answerRepository.findAllByAnswerLikeIgnoreCase("%" + text + "%", pageable);
@@ -67,13 +83,5 @@ public class AnswerService {
         }
 
         return answerDTOs;
-    }
-
-    public Answer updateAnswer(Answer a) {
-        Answer answer = answerRepository.findById(a.getId()).orElseThrow(() -> new ResourceNotFoundException("The answer does not found"));
-
-        answer.setAnswer(a.getAnswer());
-
-        return answerRepository.save(answer);
     }
 }
