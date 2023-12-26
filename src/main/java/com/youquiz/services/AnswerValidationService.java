@@ -36,30 +36,30 @@ public class AnswerValidationService implements IAnswerValidationService {
     }
 
     @Override
-    public AnswerValidationDTO create(AnswerValidationRequestDTO a) {
-        if (!questionRepository.existsById(a.getQuestionId())) {
+    public AnswerValidationDTO create(AnswerValidationRequestDTO request) {
+        if (!questionRepository.existsById(request.getQuestionId())) {
             throw new ResourceNotFoundException("The question does not exist.");
         }
 
-        if (!answerRepository.existsById(a.getAnswerId())) {
+        if (!answerRepository.existsById(request.getAnswerId())) {
             throw new ResourceNotFoundException("The answer does not exist.");
         }
 
-        if (avRepository.existsByQuestionIdAndAnswerId(a.getQuestionId(), a.getAnswerId())) {
+        if (avRepository.existsByQuestionIdAndAnswerId(request.getQuestionId(), request.getAnswerId())) {
             throw new ResourceNotFoundException("The answer is already assigned to this question.");
         }
 
-        List<AnswerValidation> avList = avRepository.findAllByQuestionId(a.getQuestionId());
+        List<AnswerValidation> avList = avRepository.findAllByQuestionId(request.getQuestionId());
 
         if (!avList.isEmpty() && avList.get(0).getQuestion().getType() == QuestionType.SINGLE) {
             for (AnswerValidation av : avList) {
-                if (av.getPoints() > 0 && a.getPoints() > 0) {
+                if (av.getPoints() > 0 && request.getPoints() > 0) {
                     throw new ResourceBadRequestException("Questions of type \"Single\" don't accept more than one correct answer.");
                 }
             }
         }
 
-        AnswerValidation av = modelMapper.map(a, AnswerValidation.class);
+        AnswerValidation av = modelMapper.map(request, AnswerValidation.class);
 
         return modelMapper.map(avRepository.save(av), AnswerValidationDTO.class);
     }
@@ -86,8 +86,11 @@ public class AnswerValidationService implements IAnswerValidationService {
     }
 
     @Override
-    public AnswerValidationDTO get(Long aLong) {
-        return null;
+    public AnswerValidationDTO get(Long id) {
+        AnswerValidation av = avRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("The association between the answer and question was not found."));
+
+        return modelMapper.map(av, AnswerValidationDTO.class);
     }
 
     @Override
