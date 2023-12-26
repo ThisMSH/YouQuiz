@@ -3,4 +3,8 @@ package com.youquiz.repositories;
 import com.youquiz.entities.Media;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MediaRepository extends JpaRepository<Media, Long> {}
+import java.util.List;
+
+public interface MediaRepository extends JpaRepository<Media, Long> {
+    List<Media> findAllByQuestionId(Long questionId);
+}

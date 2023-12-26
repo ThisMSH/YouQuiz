@@ -1,13 +1,16 @@
 package com.youquiz.services;
 
 import com.youquiz.dto.requestdto.MediaFileRequestDTO;
+import com.youquiz.dto.responsedto.MediaDTO;
 import com.youquiz.entities.Media;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.exceptions.StorageException;
 import com.youquiz.exceptions.StorageExpectationFailed;
 import com.youquiz.exceptions.StorageUnprocessableException;
 import com.youquiz.repositories.MediaRepository;
-import com.youquiz.dao.FileStorageDAO;
+import com.youquiz.repositories.QuestionRepository;
+import com.youquiz.services.interfaces.IFileStorage;
+import com.youquiz.services.interfaces.IMediaService;
 import com.youquiz.utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +23,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class MediaService implements FileStorageDAO {
+public class MediaService implements IFileStorage, IMediaService {
     private final MediaRepository mediaRepository;
+    private final QuestionRepository questionRepository;
     private final ModelMapper modelMapper;
     private final Path path = Paths.get("storage");
 
     @Autowired
-    public MediaService(MediaRepository mediaRepository, ModelMapper modelMapper) {
+    public MediaService(MediaRepository mediaRepository, QuestionRepository questionRepository, ModelMapper modelMapper) {
         this.mediaRepository = mediaRepository;
+        this.questionRepository = questionRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -78,18 +81,23 @@ public class MediaService implements FileStorageDAO {
         }
     }
 
-    public Media createMedia(MediaFileRequestDTO m) {
+    @Override
+    public MediaDTO create(MediaFileRequestDTO request) {
+        if (!questionRepository.existsById(request.getQuestionId())) {
+            throw new ResourceNotFoundException("Question not found.");
+        }
+
         Path filePath = null;
 
         try {
-            String url = this.saveFile(m.getFile());
+            String url = this.saveFile(request.getFile());
 
-            Media media = modelMapper.map(m, Media.class);
+            Media media = modelMapper.map(request, Media.class);
             media.setUrl(url);
 
             filePath = Path.of(url);
 
-            return mediaRepository.save(media);
+            return modelMapper.map(mediaRepository.save(media), MediaDTO.class);
         } catch (Exception e) {
             if (filePath != null) {
                 try {
@@ -102,12 +110,39 @@ public class MediaService implements FileStorageDAO {
         }
     }
 
-    public Media getMedia(Long id) {
-        Optional<Media> media = mediaRepository.findById(id);
+    @Override
+    public MediaDTO delete(Long id) {
+        Media media = mediaRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Media not found"));
 
-        return media.orElseThrow(() -> new ResourceNotFoundException("Media not found."));
+        this.deleteOne(media.getUrl());
+        mediaRepository.deleteById(id);
+
+        return modelMapper.map(media, MediaDTO.class);
     }
 
+    @Override
+    public MediaDTO get(Long id) {
+        Media media = mediaRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Media not found."));
+
+        return modelMapper.map(media, MediaDTO.class);
+    }
+
+    @Override
+    public List<MediaDTO> getByQuestion(Long questionId) {
+        if (!questionRepository.existsById(questionId)) {
+            throw new ResourceNotFoundException("Question not found.");
+        }
+
+        List<Media> mediaList = mediaRepository.findAllByQuestionId(questionId);
+
+        return mediaList.stream()
+            .map(media -> modelMapper.map(media, MediaDTO.class))
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public Map<String, Object> fetchMedia(String mediaStr) {
         Path mediaPath = Paths.get("storage/" + mediaStr);
 
@@ -124,17 +159,5 @@ public class MediaService implements FileStorageDAO {
         } catch (IOException e) {
             throw new StorageException(e.getMessage());
         }
-    }
-
-    public Integer deleteMedia(Long id) {
-        if (!mediaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Media not found");
-        }
-
-        Media media = this.getMedia(id);
-        this.deleteOne(media.getUrl());
-        mediaRepository.deleteById(id);
-
-        return 1;
     }
 }
