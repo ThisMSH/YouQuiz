@@ -27,6 +27,10 @@ public class Utilities<T, C, ID> {
         String sortBy = (String) params.get("sortBy");
         String sortOrder = (String) params.get("sortOrder");
 
+        if (size <= 0) {
+            throw new ResourceBadRequestException("Size cannot negative or equal to 0.");
+        }
+
         if (!sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) && !sortOrder.equalsIgnoreCase(Sort.Direction.DESC.name())) {
             throw new ResourceBadRequestException("Please make sure to choose either ascending or descending order.");
         }

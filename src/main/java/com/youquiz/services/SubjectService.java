@@ -1,9 +1,11 @@
 package com.youquiz.services;
 
+import com.youquiz.dto.requestdto.SubjectRequestDTO;
 import com.youquiz.dto.responsedto.SubjectDTO;
 import com.youquiz.entities.Subject;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.SubjectRepository;
+import com.youquiz.services.interfaces.ISubjectService;
 import com.youquiz.utils.Utilities;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class SubjectService {
+public class SubjectService implements ISubjectService {
     private final SubjectRepository subjectRepository;
     private final ModelMapper modelMapper;
 
@@ -24,28 +27,44 @@ public class SubjectService {
         this.modelMapper = modelMapper;
     }
 
-    public Subject createSubject(com.youquiz.dto.SubjectDTO s) {
-        if (s.getParentId() != null && !subjectRepository.existsById(s.getParentId())) {
-            throw new ResourceNotFoundException("Parent subject does not exist.");
+    @Override
+    public SubjectDTO create(SubjectRequestDTO request) {
+        if (request.getParentId() != null && !subjectRepository.existsById(request.getParentId())) {
+            throw new ResourceNotFoundException("Parent subject not found.");
         }
 
-        Subject subject = modelMapper.map(s, Subject.class);
+        Subject subject = modelMapper.map(request, Subject.class);
 
-        return subjectRepository.save(subject);
+        return modelMapper.map(subjectRepository.save(subject), SubjectDTO.class);
     }
 
-    public Subject getSubject(Long id) {
-        Optional<Subject> subject = subjectRepository.findById(id);
+    @Override
+    public SubjectDTO update(SubjectRequestDTO request) {
+        Subject subject = subjectRepository.findById(request.getId())
+            .orElseThrow(() -> new ResourceNotFoundException("Subject not found."));
 
-        return subject.orElseThrow(() -> new ResourceNotFoundException("Subject not found."));
-    }
-
-    public Integer deleteSubject(Long id) {
-        if (!subjectRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Subject not found.");
+        if (request.getParentId() != null && !subjectRepository.existsById(request.getParentId())) {
+            throw new ResourceNotFoundException("Parent subject not found.");
         }
 
-        Subject subject = subjectRepository.findById(id).get();
+        if (request.getParentId() != null) {
+            Subject parent = new Subject();
+            parent.setId(request.getParentId());
+
+            subject.setParent(parent);
+        } else {
+            subject.setParent(null);
+        }
+
+        subject.setTitle(request.getTitle());
+
+        return modelMapper.map(subjectRepository.save(subject), SubjectDTO.class);
+    }
+
+    @Override
+    public SubjectDTO delete(Long id) {
+        Subject subject = subjectRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Subject not found."));
 
         for (Subject child : subject.getChildren()) {
             if (subject.getParent() != null) {
@@ -58,48 +77,24 @@ public class SubjectService {
         subjectRepository.saveAll(subject.getChildren());
         subjectRepository.deleteById(id);
 
-        return 1;
+        return modelMapper.map(subject, SubjectDTO.class);
     }
 
-    public Page<SubjectDTO> getAllSubjects(String title, int page, int size, String sortBy, String sortOrder) {
-        Pageable pageable = Utilities.managePagination(page, size, sortBy, sortOrder);
+    @Override
+    public SubjectDTO get(Long id) {
+        Subject subject = subjectRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Subject not found."));
+
+        return modelMapper.map(subject, SubjectDTO.class);
+    }
+
+    @Override
+    public Page<SubjectDTO> getAll(Map<String, Object> params) {
+        String title = (String) params.get("title");
+        Pageable pageable = Utilities.managePagination(params);
 
         Page<Subject> subjects = subjectRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
 
-        Page<SubjectDTO> subjectDTOs = subjects.map(subj -> modelMapper.map(subj, SubjectDTO.class));
-
-        if (!subjects.hasContent()) {
-            String message = "";
-            if (subjects.getTotalPages() > 0 && (page + 1) > subjects.getTotalPages()) {
-                message = "No subjects found in page " + (page + 1) + ".";
-            } else {
-                message = "No subject was found.";
-            }
-            throw new ResourceNotFoundException(message);
-        }
-
-        return subjectDTOs;
-    }
-
-    public Subject updateSubject(com.youquiz.dto.SubjectDTO s) {
-        Subject subject = subjectRepository.findById(s.getId()).orElseThrow(() -> new ResourceNotFoundException("Subject does not exist."));
-
-        if (s.getParentId() != null && !subjectRepository.existsById(s.getParentId())) {
-            throw new ResourceNotFoundException("Parent subject does not exist.");
-        }
-
-        Subject subParent = new Subject();
-
-        if (s.getParentId() != null) {
-            subParent.setId(s.getParentId());
-            subject.setParent(subParent);
-        } else {
-            subject.setParent(null);
-        }
-
-        subject.setId(s.getId());
-        subject.setTitle(s.getTitle());
-
-        return subjectRepository.save(subject);
+        return subjects.map(subj -> modelMapper.map(subj, SubjectDTO.class));
     }
 }
