@@ -207,9 +207,9 @@
       GET /api/levels
     ```
 
-  | Query Parameters                                                                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-  |:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-  | `text`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **text:** To search for a level, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of levels in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `title`, `descrpition`, `maxPoints` or `minPoints`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of levels. |
+  | Query Parameters                                                                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+  |:-----------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | `title`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **title:** To search for a level, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of levels in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `title`, `descrpition`, `maxPoints` or `minPoints`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of levels. |
 
 * #### Create a level:
     ```http
@@ -238,4 +238,58 @@
   |:-------------|:----------------------------------------------------------------------------------------------------------|
   | No parameter | Returns an object of the deleted level if a valid identifier was provided, and throws an error otherwise. |
 ---
+
+### <ins>Media</ins>
+
+* #### The media request object:
+  An example of the media request object when creating a media:
+    ```js
+    {
+        "title": "A beautiful sunset",
+        "type": "VIDEO" // type must be "VIDEO", "IMAGE" or "AUDIO"
+        "file": {/* Attached file with the request */},
+        "questionId": 1
+    }
+    ```
+
+* #### Get a media:
+    ```http
+      GET /api/media/:id
+    ```
+
+  | Parameters   | Description                                                                               |
+  |:-------------|:------------------------------------------------------------------------------------------|
+  | No parameter | Returns a media object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get media file:
+    ```http
+      GET /api/media/get/:file-name
+    ```
+
+  | Parameters   | Description                                                                      |
+  |:-------------|:---------------------------------------------------------------------------------|
+  | No parameter | Returns a file if a valid file name was provided, and throws an error otherwise. |
+
+* #### Create a media:
+    ```http
+      POST /api/media/add
+    ```
+
+  | Parameters      | Description                                                                                        |
+  |:----------------|:---------------------------------------------------------------------------------------------------|
+  | `media`: object | Returns a media object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete a media:
+    ```http
+      DELETE /api/media/:id
+    ```
+
+  | Parameters   | Description                                                                                               |
+  |:-------------|:----------------------------------------------------------------------------------------------------------|
+  | No parameter | Returns an object of the deleted media if a valid identifier was provided, and throws an error otherwise. |
+---
+
+
+
+
 

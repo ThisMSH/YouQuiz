@@ -1,7 +1,7 @@
 package com.youquiz.controllers;
 
 import com.youquiz.dto.requestdto.MediaFileRequestDTO;
-import com.youquiz.entities.Media;
+import com.youquiz.dto.responsedto.MediaDTO;
 import com.youquiz.services.MediaService;
 import com.youquiz.utils.ResponseHandler;
 import jakarta.validation.Valid;
@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/medias")
+@RequestMapping("/media")
 public class MediaController {
     private final MediaService mediaService;
 
@@ -26,7 +25,7 @@ public class MediaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getMedia(@PathVariable("id") Long id) {
-        Media media = mediaService.getMedia(id);
+        MediaDTO media = mediaService.get(id);
 
         return ResponseHandler.success(
             "The media has been fetched successfully.",
@@ -44,7 +43,7 @@ public class MediaController {
 
     @PostMapping("/add")
     public ResponseEntity<Object> createMedia(@ModelAttribute @Valid MediaFileRequestDTO m) {
-        Media media = mediaService.createMedia(m);
+        MediaDTO media = mediaService.create(m);
 
         return ResponseHandler.success(
             "The media has been created successfully.",
@@ -55,12 +54,12 @@ public class MediaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteMedia(@PathVariable("id") Long id) {
-        int del = mediaService.deleteMedia(id);
+        MediaDTO deletedMedia = mediaService.delete(id);
 
         return ResponseHandler.success(
             "The media has been deleted successfully.",
             HttpStatus.OK,
-            del
+            deletedMedia
         );
     }
 }

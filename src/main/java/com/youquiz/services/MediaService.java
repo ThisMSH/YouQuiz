@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -144,9 +145,8 @@ public class MediaService implements IFileStorage, IMediaService {
 
     @Override
     public Map<String, Object> fetchMedia(String mediaStr) {
-        Path mediaPath = Paths.get("storage/" + mediaStr);
-
         try {
+            Path mediaPath = Paths.get("storage/" + mediaStr);
             byte[] mediaBytes = Files.readAllBytes(mediaPath);
             String ext = com.google.common.io.Files.getFileExtension(mediaStr);
             MediaType mediaType = Utilities.getMediaType(ext);
@@ -156,7 +156,7 @@ public class MediaService implements IFileStorage, IMediaService {
             media.put("type", mediaType);
 
             return media;
-        } catch (IOException e) {
+        } catch (IOException | InvalidPathException e) {
             throw new StorageException(e.getMessage());
         }
     }
