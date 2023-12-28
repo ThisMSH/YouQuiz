@@ -48,7 +48,7 @@
     ```js
     {
         "id": 3, // Required only when updating an answer
-        "answer": "What is JDK?"
+        "answer": "A software development platform that provides all the tools and libraries ..."
     }
     ```
 
@@ -112,13 +112,13 @@
 
 * #### Get an answer-validation:
   * ##### Get by ID:
-      ```http
-        GET /api/answers-assignment/pk/:id
-      ```
+    ```http
+      GET /api/answers-assignment/pk/:id
+    ```
     
-      | Parameters   | Description                                                                                            |
-      |:-------------|:-------------------------------------------------------------------------------------------------------|
-      | No parameter | Returns an answer-validation object if a valid identifier was provided, and throws an error otherwise. |
+    | Parameters   | Description                                                                                            |
+    |:-------------|:-------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an answer-validation object if a valid identifier was provided, and throws an error otherwise. |
 
   * ##### Get by question & answer IDs:
 
@@ -187,7 +187,7 @@
     {
         "id": 3, // Required only when updating a level
         "title": "Medium",
-        "descrpition": "Optional description, can be empty.",
+        "description": "Optional description, can be empty.",
         "maxPoints": 29.9,
         "minPoints": 21.1
     }
@@ -198,45 +198,45 @@
       GET /api/levels/:id
     ```
 
-  | Parameters   | Description                                                                               |
-  |:-------------|:------------------------------------------------------------------------------------------|
-  | No parameter | Returns a level object if a valid identifier was provided, and throws an error otherwise. |
+    | Parameters   | Description                                                                               |
+    |:-------------|:------------------------------------------------------------------------------------------|
+    | No parameter | Returns a level object if a valid identifier was provided, and throws an error otherwise. |
 
 * #### Get all levels:
     ```http
       GET /api/levels
     ```
 
-  | Query Parameters                                                                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-  |:-----------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-  | `title`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **title:** To search for a level, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of levels in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `title`, `descrpition`, `maxPoints` or `minPoints`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of levels. |
+    | Query Parameters                                                                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+    |:-----------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `title`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **title:** To search for a level, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of levels in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `title`, `description`, `maxPoints` or `minPoints`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of levels. |
 
 * #### Create a level:
     ```http
       POST /api/levels/add
     ```
 
-  | Parameters      | Description                                                                                        |
-  |:----------------|:---------------------------------------------------------------------------------------------------|
-  | `level`: object | Returns a level object if a valid object was provided, and throws an error or exception otherwise. |
+    | Parameters      | Description                                                                                        |
+    |:----------------|:---------------------------------------------------------------------------------------------------|
+    | `level`: object | Returns a level object if a valid object was provided, and throws an error or exception otherwise. |
 
 * #### Update a level:
     ```http
       PUT /api/levels/update
     ```
 
-  | Parameters      | Description                                                                                        |
-  |:----------------|:---------------------------------------------------------------------------------------------------|
-  | `level`: object | Returns a level object if a valid object was provided, and throws an error or exception otherwise. |
+    | Parameters      | Description                                                                                        |
+    |:----------------|:---------------------------------------------------------------------------------------------------|
+    | `level`: object | Returns a level object if a valid object was provided, and throws an error or exception otherwise. |
 
 * #### Delete a level:
     ```http
       DELETE /api/levels/:id
     ```
 
-  | Parameters   | Description                                                                                               |
-  |:-------------|:----------------------------------------------------------------------------------------------------------|
-  | No parameter | Returns an object of the deleted level if a valid identifier was provided, and throws an error otherwise. |
+    | Parameters   | Description                                                                                               |
+    |:-------------|:----------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted level if a valid identifier was provided, and throws an error otherwise. |
 ---
 
 ### <ins>Media</ins>
@@ -246,7 +246,7 @@
     ```js
     {
         "title": "A beautiful sunset",
-        "type": "VIDEO" // type must be "VIDEO", "IMAGE" or "AUDIO"
+        "type": "VIDEO" // type must be either "VIDEO", "IMAGE" or "AUDIO"
         "file": {/* Attached file with the request */},
         "questionId": 1
     }
@@ -257,36 +257,97 @@
       GET /api/media/:id
     ```
 
-  | Parameters   | Description                                                                               |
-  |:-------------|:------------------------------------------------------------------------------------------|
-  | No parameter | Returns a media object if a valid identifier was provided, and throws an error otherwise. |
+    | Parameters   | Description                                                                               |
+    |:-------------|:------------------------------------------------------------------------------------------|
+    | No parameter | Returns a media object if a valid identifier was provided, and throws an error otherwise. |
 
 * #### Get media file:
     ```http
       GET /api/media/get/:file-name
     ```
 
-  | Parameters   | Description                                                                      |
-  |:-------------|:---------------------------------------------------------------------------------|
-  | No parameter | Returns a file if a valid file name was provided, and throws an error otherwise. |
+    | Parameters   | Description                                                                      |
+    |:-------------|:---------------------------------------------------------------------------------|
+    | No parameter | Returns a file if a valid file name was provided, and throws an error otherwise. |
 
 * #### Create a media:
     ```http
       POST /api/media/add
     ```
 
-  | Parameters      | Description                                                                                        |
-  |:----------------|:---------------------------------------------------------------------------------------------------|
-  | `media`: object | Returns a media object if a valid object was provided, and throws an error or exception otherwise. |
+    | Parameters      | Description                                                                                        |
+    |:----------------|:---------------------------------------------------------------------------------------------------|
+    | `media`: object | Returns a media object if a valid object was provided, and throws an error or exception otherwise. |
 
 * #### Delete a media:
     ```http
       DELETE /api/media/:id
     ```
 
-  | Parameters   | Description                                                                                               |
-  |:-------------|:----------------------------------------------------------------------------------------------------------|
-  | No parameter | Returns an object of the deleted media if a valid identifier was provided, and throws an error otherwise. |
+    | Parameters   | Description                                                                                               |
+    |:-------------|:----------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted media if a valid identifier was provided, and throws an error otherwise. |
+---
+
+### <ins>Questions</ins>
+
+* #### The question request object:
+  An example of the question request object when creating or updating a question:
+    ```js
+    {
+        "id": 3, // Required only when updating a level
+        "question": "What is JDK?",
+        "description": "Optional description, can be empty.",
+        "type": "SINGLE", // type must be either "SINGLE", "MULTI" or "DIRECT"
+        "levelId": 3
+        "subjectId": 4
+    }
+    ```
+
+* #### Get a question:
+    ```http
+      GET /api/questions/:id
+    ```
+
+    | Parameters   | Description                                                                                  |
+    |:-------------|:---------------------------------------------------------------------------------------------|
+    | No parameter | Returns a question object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get all questions:
+    ```http
+      GET /api/questions
+    ```
+
+    | Query Parameters                                                                                                                                               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+    |:---------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `question`: string<br/>`type`: enum<br/>`level`: long<br/>`subject`: long<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **question:** To search for a question, default is `""`.<br/>**type:** To filter questions by their types (`SINGLE`, `MULTI`, `DIRECT` or empty string), default is `""`.<br/>**level:** To filter questions by the level, default is `0`.<br/>**subject:** To filter questions by the subject, default is `0`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of questions in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `question`, `description`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of questions. |
+
+* #### Create a question:
+    ```http
+      POST /api/questions/add
+    ```
+
+    | Parameters         | Description                                                                                           |
+    |:-------------------|:------------------------------------------------------------------------------------------------------|
+    | `question`: object | Returns a question object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Update a question:
+    ```http
+      PUT /api/questions/update
+    ```
+
+    | Parameters         | Description                                                                                           |
+    |:-------------------|:------------------------------------------------------------------------------------------------------|
+    | `question`: object | Returns a question object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete a question:
+    ```http
+      DELETE /api/questions/:id
+    ```
+
+    | Parameters   | Description                                                                                                  |
+    |:-------------|:-------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted question if a valid identifier was provided, and throws an error otherwise. |
 ---
 
 
