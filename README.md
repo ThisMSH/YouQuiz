@@ -350,6 +350,63 @@
     | No parameter | Returns an object of the deleted question if a valid identifier was provided, and throws an error otherwise. |
 ---
 
+### <ins>Subjects</ins>
+
+* #### The subject request object:
+  An example of the subject request object when creating or updating a subject:
+    ```js
+    {
+        "id": 3, // Required only when updating a subject
+        "title": "Mathematics",
+        "parent": 1 // can be null
+    }
+    ```
+
+* #### Get a subject:
+    ```http
+      GET /api/subjects/:id
+    ```
+
+    | Parameters   | Description                                                                                 |
+    |:-------------|:--------------------------------------------------------------------------------------------|
+    | No parameter | Returns a subject object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get all subjects:
+    ```http
+      GET /api/subjects
+    ```
+
+    | Query Parameters                                                                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+    |:-----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `title`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **title:** To search for a subject, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of subjects in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `title`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of subjects. |
+
+* #### Create a subject:
+    ```http
+      POST /api/subjects/add
+    ```
+
+    | Parameters        | Description                                                                                          |
+    |:------------------|:-----------------------------------------------------------------------------------------------------|
+    | `subject`: object | Returns a subject object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Update a subject:
+    ```http
+      PUT /api/subjects/update
+    ```
+
+    | Parameters        | Description                                                                                          |
+    |:------------------|:-----------------------------------------------------------------------------------------------------|
+    | `subject`: object | Returns a subject object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete a subject:
+    ```http
+      DELETE /api/subjects/:id
+    ```
+
+    | Parameters   | Description                                                                                                 |
+    |:-------------|:------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted subject if a valid identifier was provided, and throws an error otherwise. |
+---
 
 
 

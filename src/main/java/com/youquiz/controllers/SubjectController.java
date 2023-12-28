@@ -1,16 +1,18 @@
 package com.youquiz.controllers;
 
-import com.youquiz.dto.SubjectDTO;
-import com.youquiz.entities.Subject;
+import com.youquiz.dto.requestdto.SubjectRequestDTO;
+import com.youquiz.dto.responsedto.SubjectDTO;
 import com.youquiz.services.SubjectService;
 import com.youquiz.utils.ResponseHandler;
+import com.youquiz.utils.Utilities;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*")
+import java.util.Map;
+
 @RestController
 @RequestMapping("/subjects")
 public class SubjectController {
@@ -23,7 +25,7 @@ public class SubjectController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getSubject(@PathVariable("id") Long id) {
-        Subject subject = subjectService.getSubject(id);
+        SubjectDTO subject = subjectService.get(id);
 
         return ResponseHandler.success(
             "The subject has been fetched successfully.",
@@ -35,12 +37,15 @@ public class SubjectController {
     @GetMapping
     public ResponseEntity<Object> getAllSubjects(
         @RequestParam(defaultValue = "") String title,
-        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "24") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "ASC") String sortOrder
     ) {
-        var subjects = subjectService.getAllSubjects(title, page - 1, size, sortBy, sortOrder);
+        Map<String, Object> params = Utilities.params(page, size, sortBy, sortOrder);
+        params.put("title", title);
+
+        var subjects = subjectService.getAll(params);
 
         return ResponseHandler.success(
             "The subjects have been fetched successfully.",
@@ -50,8 +55,8 @@ public class SubjectController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createSubject(@RequestBody @Valid SubjectDTO subject) {
-        Subject createdSubject = subjectService.createSubject(subject);
+    public ResponseEntity<Object> createSubject(@RequestBody @Valid SubjectRequestDTO subject) {
+        SubjectDTO createdSubject = subjectService.create(subject);
 
         return ResponseHandler.success(
             "The subject has been created successfully.",
@@ -61,8 +66,8 @@ public class SubjectController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateSubject(@RequestBody @Valid SubjectDTO subject) {
-        Subject updatedSubject = subjectService.updateSubject(subject);
+    public ResponseEntity<Object> updateSubject(@RequestBody @Valid SubjectRequestDTO subject) {
+        SubjectDTO updatedSubject = subjectService.update(subject);
 
         return ResponseHandler.success(
             "The subject has been updated successfully.",
@@ -73,12 +78,12 @@ public class SubjectController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteSubject(@PathVariable("id") Long id) {
-        int del = subjectService.deleteSubject(id);
+        SubjectDTO deletedSubject = subjectService.delete(id);
 
         return ResponseHandler.success(
             "The subject has been deleted successfully.",
-            HttpStatus.CREATED,
-            del
+            HttpStatus.OK,
+            deletedSubject
         );
     }
 }
