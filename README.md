@@ -12,7 +12,7 @@
 #### Success
 
 When fetching the data successfully, you will receive this response:
-```json
+```js
 {
     "data": {/* Fetched data */},
     "message": "Success message",
@@ -24,7 +24,7 @@ When fetching the data successfully, you will receive this response:
 
 ##### In case of exception:
 When an unexpected error occurs during request processing, you will receive this response:
-```json
+```js
 {
     "cause": {/* Optional: The cause of this exception, if available */},
     "message": "Exception message",
@@ -34,7 +34,7 @@ When an unexpected error occurs during request processing, you will receive this
 
 ##### In case of invalid data:
 When submitting invalid data in a request, you will receive this response:
-```json
+```js
 {
     "errors": {/* The invalid fields with specific error messages */},
     "message": "Error message",
@@ -44,59 +44,140 @@ When submitting invalid data in a request, you will receive this response:
 ---
 ### <ins>Answers</ins>
 
-#### The answer request object:
-An example of the answer request object when creating or updating an answer:
-```json
-{
-    "id": 3, // Required only when updating an answer
-    "answer": "What is JDK?"
-}
-```
+* #### The answer request object:
+    An example of the answer request object when creating or updating an answer:
+    ```js
+    {
+        "id": 3, // Required only when updating an answer
+        "answer": "What is JDK?"
+    }
+    ```
 
-#### Get an answer:
-```http
-  GET /api/answers/:id
-```
+* #### Get an answer:
+    ```http
+      GET /api/answers/:id
+    ```
+    
+    | Parameters   | Description                                                                                 |
+    |:-------------|:--------------------------------------------------------------------------------------------|
+    | No parameter | Returns an answer object if a valid identifier was provided, and throws an error otherwise. |
 
-| Parameters   | Description                                                                                 |
-|:-------------|:--------------------------------------------------------------------------------------------|
-| No parameter | Returns an answer object if a valid identifier was provided, and throws an error otherwise. |
+* #### Get all answers:
+    ```http
+      GET /api/answers
+    ```
+    
+    | Query Parameters                                                                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+    |:----------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `text`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **text:** To search for an answer, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of answers in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id` or `answer`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an answer object if a valid identifier was provided, and throws an error otherwise. |
 
-#### Get all answers:
-```http
-  GET /api/answers
-```
+* #### Create an answer:
+    ```http
+      POST /api/answers/add
+    ```
+    
+    | Parameters       | Description                                                                                          |
+    |:-----------------|:-----------------------------------------------------------------------------------------------------|
+    | `answer`: object | Returns an answer object if a valid object was provided, and throws an error or exception otherwise. |
 
-| Query Parameters                                                                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|:----------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `text`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **text:** To search for an answer, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of answers in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id` or `answer`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an answer object if a valid identifier was provided, and throws an error otherwise. |
+* #### Update an answer:
+    ```http
+      PUT /api/answers/update
+    ```
+    
+    | Parameters       | Description                                                                                          |
+    |:-----------------|:-----------------------------------------------------------------------------------------------------|
+    | `answer`: object | Returns an answer object if a valid object was provided, and throws an error or exception otherwise. |
 
-#### Create an answer:
-```http
-  POST /api/answers/add
-```
+* #### Delete an answer:
+    ```http
+      DELETE /api/answers/:id
+    ```
+    
+    | Parameters   | Description                                                                                                |
+    |:-------------|:-----------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted answer if a valid identifier was provided, and throws an error otherwise. |
+---
 
-| Parameters       | Description                                                                                          |
-|:-----------------|:-----------------------------------------------------------------------------------------------------|
-| `answer`: object | Returns an answer object if a valid object was provided, and throws an error or exception otherwise. |
+### <ins>Answer Validations</ins>
 
-#### Update an answer:
-```http
-  PUT /api/answers/update
-```
+* #### The answer-validation request object:
+    An example of the answer-validation request object when creating an answer-validation:
+    ```js
+    {
+        "points": 3.4,
+        "answerId": 2,
+        "questionId": 1
+    }
+    ```
 
-| Parameters       | Description                                                                                          |
-|:-----------------|:-----------------------------------------------------------------------------------------------------|
-| `answer`: object | Returns an answer object if a valid object was provided, and throws an error or exception otherwise. |
+* #### Get an answer-validation:
+  * ##### Get by ID:
+      ```http
+        GET /api/answers-assignment/pk/:id
+      ```
+    
+      | Parameters   | Description                                                                                            |
+      |:-------------|:-------------------------------------------------------------------------------------------------------|
+      | No parameter | Returns an answer-validation object if a valid identifier was provided, and throws an error otherwise. |
 
-#### Delete an answer:
-```http
-  DELETE /api/answers/:id
-```
+  * ##### Get by question & answer IDs:
 
-| Parameters   | Description                                                                                                |
-|:-------------|:-----------------------------------------------------------------------------------------------------------|
-| No parameter | Returns an object of the deleted answer if a valid identifier was provided, and throws an error otherwise. |
+    ```http
+      GET /api/answers-assignment/fk/:questionId-:answerId
+    ```
+    
+    | Parameters   | Description                                                                                              |
+    |:-------------|:---------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an answer-validation object if a valid identifiers were provided, and throws an error otherwise. |
+
+* #### Get a list of answer-validation objects:
+  * ##### Get by question:
+    ```http
+      GET /api/answers-assignment/by-question/:questionId
+    ```
+
+    | Parameters   | Description                                                                                                    |
+    |:-------------|:---------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns a list of answer-validation objects if a valid identifier was provided, and throws an error otherwise. |
+
+  * ##### Get by answer:
+    ```http
+      GET /api/answers-assignment/by-answer/:answerId
+    ```
+
+    | Parameters   | Description                                                                                                    |
+    |:-------------|:---------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns a list of answer-validation objects if a valid identifier was provided, and throws an error otherwise. |
+
+
+* #### Create an answer-validation:
+    ```http
+      POST /api/answers-assignment/add
+    ```
+    
+    | Parameters                 | Description                                                                                                     |
+    |:---------------------------|:----------------------------------------------------------------------------------------------------------------|
+    | `AnswerValidation`: object | Returns an answer-validation object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete an answer-validation:
+  * ##### Delete by ID:
+    ```http
+      DELETE /api/answers-assignment/pk/:id
+    ```
+    
+    | Parameters   | Description                                                                                                           |
+    |:-------------|:----------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted answer-validation if a valid identifier was provided, and throws an error otherwise. |
+
+  * ##### Delete by question & answer IDs:
+    ```http
+      DELETE /api/answers-assignment/fk/:questionId-:answerId
+    ```
+    
+    | Parameters   | Description                                                                                                             |
+    |:-------------|:------------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted answer-validation if a valid identifiers were provided, and throws an error otherwise. |
 ---
 
 
