@@ -9,38 +9,37 @@
 
 ### <ins>Response</ins>
 
-#### Success
+* #### Success
 
-When fetching the data successfully, you will receive this response:
-```js
-{
-    "data": {/* Fetched data */},
-    "message": "Success message",
-    "status": 200 // HTTP status code (201 for creating new resource, else 200)
-}
-```
+    When fetching the data successfully, you will receive this response:
+    ```js
+    {
+        "data": {/* Fetched data */},
+        "message": "Success message",
+        "status": 200 // HTTP status code (201 for creating new resource, else 200)
+    }
+    ```
 
-#### Errors
-
-##### In case of exception:
-When an unexpected error occurs during request processing, you will receive this response:
-```js
-{
-    "cause": {/* Optional: The cause of this exception, if available */},
-    "message": "Exception message",
-    "status": 404 // HTTP status code (can be adjusted for specific exceptions)
-}
-```
-
-##### In case of invalid data:
-When submitting invalid data in a request, you will receive this response:
-```js
-{
-    "errors": {/* The invalid fields with specific error messages */},
-    "message": "Error message",
-    "status": 422 // HTTP status code (can be adjusted for specific errors)
-}
-```
+* #### Errors
+    * ##### In case of exception:
+      When an unexpected error occurs during request processing, you will receive this response:
+      ```js
+      {
+          "cause": {/* Optional: The cause of this exception, if available */},
+          "message": "Exception message",
+          "status": 404 // HTTP status code (can be adjusted for specific exceptions)
+      }
+      ```
+    
+    * ##### In case of invalid data:
+      When submitting invalid data in a request, you will receive this response:
+      ```js
+      {
+          "errors": {/* The invalid fields with specific error messages */},
+          "message": "Error message",
+          "status": 422 // HTTP status code (can be adjusted for specific errors)
+      }
+      ```
 ---
 ### <ins>Answers</ins>
 
@@ -67,9 +66,9 @@ When submitting invalid data in a request, you will receive this response:
       GET /api/answers
     ```
     
-    | Query Parameters                                                                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-    |:----------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | `text`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **text:** To search for an answer, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of answers in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id` or `answer`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an answer object if a valid identifier was provided, and throws an error otherwise. |
+    | Query Parameters                                                                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+    |:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `text`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **text:** To search for an answer, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of answers in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id` or `answer`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of answers. |
 
 * #### Create an answer:
     ```http
@@ -180,4 +179,63 @@ When submitting invalid data in a request, you will receive this response:
     | No parameter | Returns an object of the deleted answer-validation if a valid identifiers were provided, and throws an error otherwise. |
 ---
 
+### <ins>Levels</ins>
+
+* #### The level request object:
+  An example of the level request object when creating or updating a level:
+    ```js
+    {
+        "id": 3, // Required only when updating a level
+        "title": "Medium",
+        "descrpition": "Optional description, can be empty.",
+        "maxPoints": 29.9,
+        "minPoints": 21.1
+    }
+    ```
+
+* #### Get a level:
+    ```http
+      GET /api/levels/:id
+    ```
+
+  | Parameters   | Description                                                                               |
+  |:-------------|:------------------------------------------------------------------------------------------|
+  | No parameter | Returns a level object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get all levels:
+    ```http
+      GET /api/levels
+    ```
+
+  | Query Parameters                                                                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+  |:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | `text`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **text:** To search for a level, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of levels in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `title`, `descrpition`, `maxPoints` or `minPoints`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of levels. |
+
+* #### Create a level:
+    ```http
+      POST /api/levels/add
+    ```
+
+  | Parameters      | Description                                                                                        |
+  |:----------------|:---------------------------------------------------------------------------------------------------|
+  | `level`: object | Returns a level object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Update a level:
+    ```http
+      PUT /api/levels/update
+    ```
+
+  | Parameters      | Description                                                                                        |
+  |:----------------|:---------------------------------------------------------------------------------------------------|
+  | `level`: object | Returns a level object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete a level:
+    ```http
+      DELETE /api/levels/:id
+    ```
+
+  | Parameters   | Description                                                                                               |
+  |:-------------|:----------------------------------------------------------------------------------------------------------|
+  | No parameter | Returns an object of the deleted level if a valid identifier was provided, and throws an error otherwise. |
+---
 
