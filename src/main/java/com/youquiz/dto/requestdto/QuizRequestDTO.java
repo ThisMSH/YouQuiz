@@ -4,6 +4,7 @@ import com.youquiz.entities.Trainer;
 import com.youquiz.entities.embeddableid.QuizQuestionId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,9 +32,11 @@ public class QuizRequestDTO {
     private Boolean canSeeResult = false;
 
     @NotNull(message = "Chances field is required.")
+    @Positive(message = "Chances of the quiz have to be greater than 0.")
     private Byte chances;
 
-    @NotNull(message = "Remark is required.")
+    @NotBlank(message = "Remark is required.")
+    @Size(max = 255, message = "Remark cannot exceed 255 characters.")
     private String remark;
 
     private LocalDateTime createdAt;
@@ -41,6 +44,7 @@ public class QuizRequestDTO {
     private LocalDateTime updatedAt;
 
     @NotNull(message = "Trainer is required.")
+    @Positive(message = "Trainer ID is invalid.")
     private Long trainerId;
 
     private List<Long> quizAssignmentIds;

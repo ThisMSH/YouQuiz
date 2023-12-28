@@ -2,6 +2,7 @@ package com.youquiz.dto.requestdto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,6 @@ public class MediaFileRequestDTO {
     private MultipartFile file;
 
     @NotNull(message = "Question is required.")
+    @Positive(message = "Question ID is invalid.")
     private Long questionId;
 }

@@ -3,6 +3,7 @@ package com.youquiz.dto.requestdto;
 import com.youquiz.entities.embeddableid.QuizQuestionId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,9 +35,11 @@ public class QuestionRequestDTO {
     private LocalDateTime updatedAt;
 
     @NotNull(message = "Level is required.")
+    @Positive(message = "Level ID is invalid.")
     private Long levelId;
 
     @NotNull(message = "Subject is required.")
+    @Positive(message = "Subject ID is invalid.")
     private Long subjectId;
 
     private List<Long> mediaIds;

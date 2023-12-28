@@ -2,6 +2,7 @@ package com.youquiz.dto.requestdto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class QuizAssignmentRequestDTO {
     private Double score = 0.0;
 
     @NotNull(message = "Passing score is required.")
+    @Positive(message = "Passing score must be positive.")
     private Double passResult;
 
     private LocalDateTime createdAt;
@@ -36,9 +38,11 @@ public class QuizAssignmentRequestDTO {
     private LocalDateTime updatedAt;
 
     @NotNull(message = "Student is required.")
+    @Positive(message = "Student ID is invalid.")
     private Long studentId;
 
     @NotNull(message = "Quiz is required.")
+    @Positive(message = "Quiz ID is invalid.")
     private Long quizId;
 
     private List<Long> answerValidationIds;

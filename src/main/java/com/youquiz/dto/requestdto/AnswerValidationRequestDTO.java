@@ -3,6 +3,7 @@ package com.youquiz.dto.requestdto;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,9 +23,11 @@ public class AnswerValidationRequestDTO {
     private LocalDateTime createdAt;
 
     @NotNull(message = "Answer is required.")
+    @Positive(message = "Answer ID is invalid.")
     private Long answerId;
 
     @NotNull(message = "Question is required.")
+    @Positive(message = "Question ID is invalid.")
     private Long questionId;
 
     private List<Long> quizAssignmentIds;

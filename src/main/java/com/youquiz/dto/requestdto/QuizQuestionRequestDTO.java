@@ -2,6 +2,7 @@ package com.youquiz.dto.requestdto;
 
 import com.youquiz.entities.embeddableid.QuizQuestionId;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,10 @@ public class QuizQuestionRequestDTO {
     private LocalDateTime createdAt;
 
     @NotNull(message = "Quiz is required.")
+    @Positive(message = "Quiz ID is invalid.")
     private Long quizId;
 
     @NotNull(message = "Question is required.")
+    @Positive(message = "Question ID is invalid.")
     private Long questionId;
 }
