@@ -1,15 +1,18 @@
 package com.youquiz.controllers;
 
-import com.youquiz.entities.Answer;
+import com.youquiz.dto.requestdto.AnswerRequestDTO;
+import com.youquiz.dto.responsedto.AnswerDTO;
 import com.youquiz.services.AnswerService;
 import com.youquiz.utils.ResponseHandler;
+import com.youquiz.utils.Utilities;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*")
+import java.util.Map;
+
 @RestController
 @RequestMapping("/answers")
 public class AnswerController {
@@ -22,7 +25,7 @@ public class AnswerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getAnswer(@PathVariable("id") Long id) {
-        Answer answer = answerService.getAnswer(id);
+        AnswerDTO answer = answerService.get(id);
 
         return ResponseHandler.success(
             "The answer has been fetched successfully.",
@@ -34,12 +37,14 @@ public class AnswerController {
     @GetMapping
     public ResponseEntity<Object> getAllAnswers(
         @RequestParam(defaultValue = "") String text,
-        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "24") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "ASC") String sortOrder
     ) {
-        var answers = answerService.getAllAnswers(text, page - 1, size, sortBy, sortOrder);
+        Map<String, Object> params = Utilities.params(page, size, sortBy, sortOrder);
+        params.put("text", text);
+        var answers = answerService.getAll(params);
 
         return ResponseHandler.success(
             "The answers have been fetched successfully.",
@@ -49,8 +54,8 @@ public class AnswerController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createAnswer(@RequestBody @Valid Answer answer) {
-        Answer createdAnswer = answerService.createAnswer(answer);
+    public ResponseEntity<Object> createAnswer(@RequestBody @Valid AnswerRequestDTO answer) {
+        AnswerDTO createdAnswer = answerService.create(answer);
 
         return ResponseHandler.success(
             "The answer has been created successfully.",
@@ -60,8 +65,8 @@ public class AnswerController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateAnswer(@RequestBody @Valid Answer answer) {
-        Answer updatedAnswer = answerService.updateAnswer(answer);
+    public ResponseEntity<Object> updateAnswer(@RequestBody @Valid AnswerRequestDTO answer) {
+        AnswerDTO updatedAnswer = answerService.update(answer);
 
         return ResponseHandler.success(
             "The answer has been updated successfully.",
@@ -72,12 +77,12 @@ public class AnswerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteAnswer(@PathVariable("id") Long id) {
-        int del = answerService.deleteAnswer(id);
+        AnswerDTO deletedAnswer = answerService.delete(id);
 
         return ResponseHandler.success(
             "The answer has been deleted successfully.",
             HttpStatus.OK,
-            del
+            deletedAnswer
         );
     }
 }
