@@ -11,5 +11,5 @@ public interface IMediaService {
     MediaDTO delete(Long id);
     MediaDTO get(Long id);
     List<MediaDTO> getByQuestion(Long questionId);
-    Map<String, Object> fetchMedia(String str)
+    Map<String, Object> fetchMedia(String str);
 }
