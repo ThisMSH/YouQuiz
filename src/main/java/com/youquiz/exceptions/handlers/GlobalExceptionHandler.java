@@ -1,6 +1,7 @@
 package com.youquiz.exceptions.handlers;
 
 import com.youquiz.utils.ResponseHandler;
+import jakarta.validation.ConstraintViolationException;
 import org.modelmapper.MappingException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -29,5 +30,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {IllegalArgumentException.class})
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseHandler.exception(e, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {ConstraintViolationException.class})
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
+        return ResponseHandler.exception(e, HttpStatus.NOT_ACCEPTABLE);
     }
 }

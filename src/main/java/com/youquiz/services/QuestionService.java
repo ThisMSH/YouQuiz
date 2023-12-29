@@ -7,10 +7,7 @@ import com.youquiz.dto.requestdto.SubjectRequestDTO;
 import com.youquiz.dto.responsedto.AnswerValidationDTO;
 import com.youquiz.dto.responsedto.MediaDTO;
 import com.youquiz.dto.responsedto.QuestionDTO;
-import com.youquiz.entities.AnswerValidation;
-import com.youquiz.entities.Level;
-import com.youquiz.entities.Question;
-import com.youquiz.entities.Subject;
+import com.youquiz.entities.*;
 import com.youquiz.enums.QuestionType;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.AnswerValidationRepository;
@@ -27,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -116,8 +114,7 @@ public class QuestionService implements IQuestionService {
 
     @Override
     public QuestionDTO get(Long id) {
-        Question question = questionRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
+        Question question = questionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Question not found."));
 
         QuestionDTO q = modelMapper.map(question, QuestionDTO.class);
 
@@ -131,17 +128,21 @@ public class QuestionService implements IQuestionService {
         subj.setChildrenIds(subject != null && subject.getChildren() != null ? subject.getChildren().stream().map(Subject::getId).collect(Collectors.toList()) : null);
         subj.setQuestionIds(subject != null && subject.getQuestions() != null ? subject.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
 
-        List<MediaDTO> media = q.getMedias();
-        media = media.stream()
-            .peek(m -> m.setQuestion(modelMapper.map(question, QuestionRequestDTO.class)))
-            .collect(Collectors.toList());
+        List<Media> media = question.getMedias();
 
-        List<AnswerValidationDTO> avDto = q.getAnswerValidations();
+        if (!media.isEmpty()) {
+            List<MediaDTO> mediaDto = media.stream().map(m -> modelMapper.map(m, MediaDTO.class)).toList();
 
-        if (!avDto.isEmpty()) {
-            List<AnswerValidation> av = avRepository.findAllByQuestionId(q.getId());
+            q.setMedias(mediaDto);
+        }
 
-            for (int i = 0; i < avDto.size(); i++) {
+        List<AnswerValidation> av = avRepository.findAllByQuestionId(q.getId());
+
+        if (!av.isEmpty()) {
+            List<AnswerValidationDTO> avDto = new ArrayList<>();
+
+            for (int i = 0; i < av.size(); i++) {
+                avDto.add(modelMapper.map(av.get(i), AnswerValidationDTO.class));
                 avDto.get(i).setQuestion(modelMapper.map(av.get(i).getQuestion(), QuestionRequestDTO.class));
                 avDto.get(i).setAnswer(modelMapper.map(av.get(i).getAnswer(), AnswerRequestDTO.class));
             }
@@ -151,7 +152,6 @@ public class QuestionService implements IQuestionService {
 
         q.setLevel(lvl);
         q.setSubject(subj);
-        q.setMedias(media);
 
         return q;
     }

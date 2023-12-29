@@ -2,10 +2,13 @@ package com.youquiz.services;
 
 import com.youquiz.dto.requestdto.AnswerRequestDTO;
 import com.youquiz.dto.responsedto.AnswerDTO;
+import com.youquiz.dto.responsedto.AnswerValidationDTO;
 import com.youquiz.entities.Answer;
+import com.youquiz.entities.AnswerValidation;
 import com.youquiz.exceptions.ResourceAlreadyExistsException;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.AnswerRepository;
+import com.youquiz.repositories.AnswerValidationRepository;
 import com.youquiz.services.interfaces.IAnswerService;
 import com.youquiz.utils.Utilities;
 import org.modelmapper.ModelMapper;
@@ -14,16 +17,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class AnswerService implements IAnswerService {
     private final AnswerRepository answerRepository;
+    private final AnswerValidationRepository avRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public AnswerService(AnswerRepository answerRepository, ModelMapper modelMapper) {
+    public AnswerService(AnswerRepository answerRepository, AnswerValidationRepository avRepository, ModelMapper modelMapper) {
         this.answerRepository = answerRepository;
+        this.avRepository = avRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -51,8 +57,13 @@ public class AnswerService implements IAnswerService {
     @Override
     public AnswerDTO get(Long id) {
         Answer answer = answerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+        AnswerDTO answerDTO = modelMapper.map(answer, AnswerDTO.class);
+        List<AnswerValidation> av = avRepository.findAllByAnswerId(id);
+        List<AnswerValidationDTO> avDto = av.stream().map(a -> modelMapper.map(a, AnswerValidationDTO.class)).toList();
 
-        return modelMapper.map(answer, AnswerDTO.class);
+        answerDTO.setAnswerValidations(avDto);
+
+        return answerDTO;
     }
 
     @Override

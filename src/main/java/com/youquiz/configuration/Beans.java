@@ -4,16 +4,20 @@ import com.youquiz.dto.requestdto.AnswerValidationRequestDTO;
 import com.youquiz.dto.requestdto.MediaFileRequestDTO;
 import com.youquiz.dto.requestdto.QuestionRequestDTO;
 import com.youquiz.dto.requestdto.SubjectRequestDTO;
-import com.youquiz.entities.AnswerValidation;
-import com.youquiz.entities.Media;
-import com.youquiz.entities.Question;
-import com.youquiz.entities.Subject;
+import com.youquiz.dto.responsedto.AnswerDTO;
+import com.youquiz.dto.responsedto.AnswerValidationDTO;
+import com.youquiz.dto.responsedto.LevelDTO;
+import com.youquiz.dto.responsedto.QuestionDTO;
+import com.youquiz.entities.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class Beans {
@@ -35,6 +39,24 @@ public class Beans {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        modelMapper.typeMap(Question.class, QuestionDTO.class)
+            .addMappings(mapper -> {
+                mapper.skip(QuestionDTO::setAnswerValidations);
+                mapper.skip(QuestionDTO::setSubject);
+                mapper.skip(QuestionDTO::setLevel);
+                mapper.skip(QuestionDTO::setMedias);
+            });
+
+        modelMapper.typeMap(Answer.class, AnswerDTO.class)
+            .addMappings(mapper -> {
+                mapper.skip(AnswerDTO::setAnswerValidations);
+            });
+
+        modelMapper.typeMap(Level.class, LevelDTO.class)
+            .addMappings(mapper -> {
+                mapper.skip(LevelDTO::setQuestions);
+            });
 
         modelMapper.typeMap(QuestionRequestDTO.class, Question.class)
             .addMappings(mapper -> {
