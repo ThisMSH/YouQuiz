@@ -4,10 +4,7 @@ import com.youquiz.dto.requestdto.AnswerValidationRequestDTO;
 import com.youquiz.dto.requestdto.MediaFileRequestDTO;
 import com.youquiz.dto.requestdto.QuestionRequestDTO;
 import com.youquiz.dto.requestdto.SubjectRequestDTO;
-import com.youquiz.dto.responsedto.AnswerDTO;
-import com.youquiz.dto.responsedto.AnswerValidationDTO;
-import com.youquiz.dto.responsedto.LevelDTO;
-import com.youquiz.dto.responsedto.QuestionDTO;
+import com.youquiz.dto.responsedto.*;
 import com.youquiz.entities.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -56,6 +53,12 @@ public class Beans {
         modelMapper.typeMap(Level.class, LevelDTO.class)
             .addMappings(mapper -> {
                 mapper.skip(LevelDTO::setQuestions);
+            });
+
+        modelMapper.typeMap(Subject.class, SubjectDTO.class)
+            .addMappings(mapper -> {
+                mapper.skip(SubjectDTO::setQuestions);
+                mapper.skip(SubjectDTO::setChildren);
             });
 
         modelMapper.typeMap(QuestionRequestDTO.class, Question.class)

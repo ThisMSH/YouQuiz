@@ -1,9 +1,12 @@
 package com.youquiz.services;
 
 import com.youquiz.dto.requestdto.SubjectRequestDTO;
+import com.youquiz.dto.responsedto.QuestionDTO;
 import com.youquiz.dto.responsedto.SubjectDTO;
+import com.youquiz.entities.Question;
 import com.youquiz.entities.Subject;
 import com.youquiz.exceptions.ResourceNotFoundException;
+import com.youquiz.repositories.QuestionRepository;
 import com.youquiz.repositories.SubjectRepository;
 import com.youquiz.services.interfaces.ISubjectService;
 import com.youquiz.utils.Utilities;
@@ -13,17 +16,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class SubjectService implements ISubjectService {
     private final SubjectRepository subjectRepository;
+    private final QuestionRepository questionRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public SubjectService(SubjectRepository subjectRepository, ModelMapper modelMapper) {
+    public SubjectService(SubjectRepository subjectRepository, QuestionRepository questionRepository, ModelMapper modelMapper) {
         this.subjectRepository = subjectRepository;
+        this.questionRepository = questionRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -84,8 +90,14 @@ public class SubjectService implements ISubjectService {
     public SubjectDTO get(Long id) {
         Subject subject = subjectRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Subject not found."));
+        SubjectDTO subjectDto = modelMapper.map(subject, SubjectDTO.class);
 
-        return modelMapper.map(subject, SubjectDTO.class);
+        List<Question> questions = questionRepository.findAllBySubjectId(id);
+
+        subjectDto.setQuestions(questions.stream().map(q -> modelMapper.map(q, QuestionDTO.class)).toList());
+        subjectDto.setChildren(subject.getChildren().stream().map(s -> modelMapper.map(s, SubjectDTO.class)).toList());
+
+        return subjectDto;
     }
 
     @Override
@@ -95,6 +107,12 @@ public class SubjectService implements ISubjectService {
 
         Page<Subject> subjects = subjectRepository.findAllByTitleLikeIgnoreCase("%" + title + "%", pageable);
 
-        return subjects.map(subj -> modelMapper.map(subj, SubjectDTO.class));
+        return subjects.
+            map(subj -> {
+                SubjectDTO s = modelMapper.map(subj, SubjectDTO.class);
+                s.setChildren(subj.getChildren().stream().map(child -> modelMapper.map(child, SubjectDTO.class)).toList());
+
+                return s;
+            });
     }
 }

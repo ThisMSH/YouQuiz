@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSpecificationExecutor<Question> {
     List<Question> findAllByLevelId(Long levelId);
+    List<Question> findAllBySubjectId(Long subjectId);
 }
