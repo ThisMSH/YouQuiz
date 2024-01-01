@@ -73,7 +73,7 @@ public class MediaService implements IFileStorage, IMediaService {
 
     @Override
     public void deleteOne(String p) {
-        Path filePath = Path.of(p);
+        Path filePath = Path.of("storage/" + p);
 
         try {
             FileSystemUtils.deleteRecursively(filePath);
