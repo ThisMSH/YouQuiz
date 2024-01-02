@@ -271,6 +271,7 @@
     | No parameter | Returns a file if a valid file name was provided, and throws an error otherwise. |
 
 * #### Create a media:
+    > :warning: **NB:** You must use **FormData** in order to submit a post request. 
     ```http
       POST /api/media/add
     ```
@@ -406,6 +407,66 @@
     | Parameters   | Description                                                                                                 |
     |:-------------|:------------------------------------------------------------------------------------------------------------|
     | No parameter | Returns an object of the deleted subject if a valid identifier was provided, and throws an error otherwise. |
+---
+### <ins>Students</ins>
+
+* #### The student request object:
+  An example of the student request object when creating or updating a student:
+    ```js
+    {
+        "id": 3, // Required only when updating a student
+        "name": "Margaret",
+        "familyName": "Hamilton",
+        "address": "Paoli, Indiana, United States",
+        "birthdate": "1936-08-17", // yyyy-MM-dd
+        "registrationDate": "2022-12-31" // yyyy-MM-dd
+    }
+    ```
+
+* #### Get a student:
+    ```http
+      GET /api/students/:id
+    ```
+
+    | Parameters   | Description                                                                                 |
+    |:-------------|:--------------------------------------------------------------------------------------------|
+    | No parameter | Returns a student object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get all students:
+    ```http
+      GET /api/students
+    ```
+
+    | Query Parameters                                                                                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+    |:--------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `fullName`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **fullName:** To search for a student, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of students in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `name`, `familyName`, `address`, `birthdate`, `registrationDate`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of students. |
+
+* #### Create a student:
+    ```http
+      POST /api/students/add
+    ```
+
+    | Parameters        | Description                                                                                          |
+    |:------------------|:-----------------------------------------------------------------------------------------------------|
+    | `student`: object | Returns a student object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Update a student:
+    ```http
+      PUT /api/students/update
+    ```
+
+    | Parameters        | Description                                                                                          |
+    |:------------------|:-----------------------------------------------------------------------------------------------------|
+    | `student`: object | Returns a student object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete a student:
+    ```http
+      DELETE /api/students/:id
+    ```
+
+    | Parameters   | Description                                                                                                 |
+    |:-------------|:------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted student if a valid identifier was provided, and throws an error otherwise. |
 ---
 
 
