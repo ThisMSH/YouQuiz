@@ -468,7 +468,66 @@
     |:-------------|:------------------------------------------------------------------------------------------------------------|
     | No parameter | Returns an object of the deleted student if a valid identifier was provided, and throws an error otherwise. |
 ---
+### <ins>Trainers</ins>
 
+* #### The trainer request object:
+  An example of the trainer request object when creating or updating a trainer:
+    ```js
+    {
+        "id": 3, // Required only when updating a trainer
+        "name": "Margaret",
+        "familyName": "Hamilton",
+        "address": "Paoli, Indiana, United States",
+        "birthdate": "1936-08-17", // yyyy-MM-dd
+        "speciality": "Software Engineering"
+    }
+    ```
+
+* #### Get a trainer:
+    ```http
+      GET /api/trainers/:id
+    ```
+
+    | Parameters   | Description                                                                                 |
+    |:-------------|:--------------------------------------------------------------------------------------------|
+    | No parameter | Returns a trainer object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get all trainers:
+    ```http
+      GET /api/trainers
+    ```
+
+    | Query Parameters                                                                                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+    |:--------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `fullName`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **fullName:** To search for a trainer, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of trainers in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `name`, `familyName`, `address`, `birthdate`, `speciality`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of trainers. |
+
+* #### Create a trainer:
+    ```http
+      POST /api/trainers/add
+    ```
+
+    | Parameters        | Description                                                                                          |
+    |:------------------|:-----------------------------------------------------------------------------------------------------|
+    | `trainer`: object | Returns a trainer object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Update a trainer:
+    ```http
+      PUT /api/trainers/update
+    ```
+
+    | Parameters        | Description                                                                                          |
+    |:------------------|:-----------------------------------------------------------------------------------------------------|
+    | `trainer`: object | Returns a trainer object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete a trainer:
+    ```http
+      DELETE /api/trainers/:id
+    ```
+
+    | Parameters   | Description                                                                                                 |
+    |:-------------|:------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted trainer if a valid identifier was provided, and throws an error otherwise. |
+---
 
 
 
