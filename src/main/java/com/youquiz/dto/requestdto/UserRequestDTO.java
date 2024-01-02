@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -28,7 +29,7 @@ public abstract class UserRequestDTO {
     @NotNull(message = "Birthdate is required.")
     protected LocalDate birthdate;
 
-    protected LocalDate createdAt;
+    protected LocalDateTime createdAt;
 
-    protected LocalDate updatedAt;
+    protected LocalDateTime updatedAt;
 }

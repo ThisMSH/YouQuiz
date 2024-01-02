@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -39,8 +40,8 @@ public abstract class User {
     protected LocalDate birthdate;
 
     @CreationTimestamp
-    protected LocalDate createdAt;
+    protected LocalDateTime createdAt;
 
     @UpdateTimestamp
-    protected LocalDate updatedAt;
+    protected LocalDateTime updatedAt;
 }
