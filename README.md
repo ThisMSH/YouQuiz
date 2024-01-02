@@ -246,7 +246,7 @@
     ```js
     {
         "title": "A beautiful sunset",
-        "type": "VIDEO" // type must be either "VIDEO", "IMAGE" or "AUDIO"
+        "type": "VIDEO" // 'type' must be either "VIDEO", "IMAGE" or "AUDIO"
         "file": {/* Attached file with the request */},
         "questionId": 1
     }
@@ -299,7 +299,7 @@
         "id": 3, // Required only when updating a level
         "question": "What is JDK?",
         "description": "Optional description, can be empty.",
-        "type": "SINGLE", // type must be either "SINGLE", "MULTI" or "DIRECT"
+        "type": "SINGLE", // 'type' must be either "SINGLE", "MULTI" or "DIRECT"
         "levelId": 3
         "subjectId": 4
     }
@@ -359,7 +359,7 @@
     {
         "id": 3, // Required only when updating a subject
         "title": "Mathematics",
-        "parent": 1 // can be null
+        "parent": 1 // Can be null
     }
     ```
 
@@ -541,8 +541,8 @@
         "title": "Java quiz",
         "duration": 45, // In minutes
         "successScore": 80.5,
-        "canSeeAnswers": true, // choose if the student can see the correct answer after answering the question
-        "canSeeResult": true, // choose if the student can see the result after finishing the quiz
+        "canSeeAnswers": true, // Choose if the student can see the correct answer after answering the question
+        "canSeeResult": true, // Choose if the student can see the result after finishing the quiz
         "chances": 5,
         "remark": "Remark about the quiz",
         "trainerId": 1
@@ -593,4 +593,63 @@
     | Parameters   | Description                                                                                              |
     |:-------------|:---------------------------------------------------------------------------------------------------------|
     | No parameter | Returns an object of the deleted quiz if a valid identifier was provided, and throws an error otherwise. |
+---
+
+### <ins>QuizQuestions</ins>
+
+* #### The quiz-question request object:
+  An example of the quiz-question request object when creating or updating a quiz-question:
+    ```js
+    {
+        "timer": 20, // In seconds
+        "allowPartialPoints": false, // Choose whether to allow partial points for each question or not
+        "questionId": 5,
+        "quizId": 1
+    }
+    ```
+
+* #### Get a quiz-question:
+    ```http
+      GET /api/quiz-questions/:quizId-:questionId
+    ```
+
+    | Parameters   | Description                                                                                         |
+    |:-------------|:----------------------------------------------------------------------------------------------------|
+    | No parameter | Returns a quiz-question object if a valid identifiers were provided, and throws an error otherwise. |
+
+* #### Get all quiz-questions by quiz:
+    ```http
+      GET /api/quiz-questions/quiz/:quizId
+    ```
+
+    | Parameters   | Description                                                                                                  |
+    |:-------------|:-------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an array of quiz-question objects if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get all quiz-questions by question:
+    ```http
+      GET /api/quiz-questions/question/:questionId
+    ```
+    
+    | Parameters   | Description                                                                                                  |
+    |:-------------|:-------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an array of quiz-question objects if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Create a quiz-question:
+    ```http
+      POST /api/quiz-questions/add
+    ```
+
+    | Parameters              | Description                                                                                                |
+    |:------------------------|:-----------------------------------------------------------------------------------------------------------|
+    | `quiz-question`: object | Returns a quiz-question object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete a quiz-question:
+    ```http
+      DELETE /api/quiz-questions/:quizId-:questionId
+    ```
+
+    | Parameters   | Description                                                                                                       |
+    |:-------------|:------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted quiz-question if a valid identifier was provided, and throws an error otherwise. |
 ---
