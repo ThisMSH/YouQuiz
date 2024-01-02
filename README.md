@@ -408,6 +408,7 @@
     |:-------------|:------------------------------------------------------------------------------------------------------------|
     | No parameter | Returns an object of the deleted subject if a valid identifier was provided, and throws an error otherwise. |
 ---
+
 ### <ins>Students</ins>
 
 * #### The student request object:
@@ -468,6 +469,7 @@
     |:-------------|:------------------------------------------------------------------------------------------------------------|
     | No parameter | Returns an object of the deleted student if a valid identifier was provided, and throws an error otherwise. |
 ---
+
 ### <ins>Trainers</ins>
 
 * #### The trainer request object:
@@ -497,8 +499,8 @@
       GET /api/trainers
     ```
 
-    | Query Parameters                                                                                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-    |:--------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | Query Parameters                                                                                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+    |:--------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | `fullName`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **fullName:** To search for a trainer, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of trainers in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `name`, `familyName`, `address`, `birthdate`, `speciality`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of trainers. |
 
 * #### Create a trainer:
@@ -529,5 +531,66 @@
     | No parameter | Returns an object of the deleted trainer if a valid identifier was provided, and throws an error otherwise. |
 ---
 
+### <ins>Quizzes</ins>
 
+* #### The quiz request object:
+  An example of the quiz request object when creating or updating a quiz:
+    ```js
+    {
+        "id": 3, // Required only when updating a quiz
+        "title": "Java quiz",
+        "duration": 45, // In minutes
+        "successScore": 80.5,
+        "canSeeAnswers": true, // choose if the student can see the correct answer after answering the question
+        "canSeeResult": true, // choose if the student can see the result after finishing the quiz
+        "chances": 5,
+        "remark": "Remark about the quiz",
+        "trainerId": 1
+    }
+    ```
 
+* #### Get a quiz:
+    ```http
+      GET /api/quizzes/:id
+    ```
+
+    | Parameters   | Description                                                                              |
+    |:-------------|:-----------------------------------------------------------------------------------------|
+    | No parameter | Returns a quiz object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get all quizzes:
+    ```http
+      GET /api/quizzes
+    ```
+
+    | Query Parameters                                                                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+    |:-----------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | `title`: string<br/>`page`: integer<br/>`size`: integer<br/>`sortBy`: string<br/>`sortOrder`: string | **title:** To search for a quiz, default is `""`.<br/>**page:** Number of the page (starting from 0), default is `0`.<br/>**size:** Number of quizzes in a single page, default is `24`.<br/>**sortBy:** name of the attribute to sort by (`id`, `title`, `duration`, `successScore`, `chances`, `remark`, `trainerId`), default is `"id"`.<br/>**sortOrder:** Sorting in ascending (`ASC`) or descending (`DESC`) order, default is `"ASC"`.<br/>Returns an object that contains all the data about pagination & array of quizzes. |
+
+* #### Create a quiz:
+    ```http
+      POST /api/quizzes/add
+    ```
+
+    | Parameters     | Description                                                                                       |
+    |:---------------|:--------------------------------------------------------------------------------------------------|
+    | `quiz`: object | Returns a quiz object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Update a quiz:
+    ```http
+      PUT /api/quizzes/update
+    ```
+
+    | Parameters     | Description                                                                                       |
+    |:---------------|:--------------------------------------------------------------------------------------------------|
+    | `quiz`: object | Returns a quiz object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Delete a quiz:
+    ```http
+      DELETE /api/quizzes/:id
+    ```
+
+    | Parameters   | Description                                                                                              |
+    |:-------------|:---------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted quiz if a valid identifier was provided, and throws an error otherwise. |
+---
