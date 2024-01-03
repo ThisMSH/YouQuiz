@@ -1,5 +1,7 @@
 # YouQuiz API
 **YouQuiz** is An interactive platform that empowers trainers to design engaging quizzes, while providing students the opportunity to take and excel in these quizzes.
+<br>
+[Click here](https://github.com/ThisMSH/YouQuiz-Front-End) to visit the front end repository of this project.
 
 ## Tech Stack
 
@@ -653,3 +655,90 @@
     |:-------------|:------------------------------------------------------------------------------------------------------------------|
     | No parameter | Returns an object of the deleted quiz-question if a valid identifier was provided, and throws an error otherwise. |
 ---
+
+### <ins>QuizAssignments</ins>
+
+* #### The quiz-assignment request object:
+  An example of the quiz-assignment request object when creating a quiz-assignment:
+    ```js
+    {
+        "reason": "Margaret",
+        "startingTime": "2023-12-14 18:45:00.000",
+        "endingTime": "2023-12-14 23:45:00.000",
+        "passResult": 80.5, // Minimum score to pass the result
+        "studentId": 4,
+        "quizId": 32
+    }
+    ```
+
+* #### Get a quiz-assignment (/w or /wo result & score):
+    ```http
+      GET /api/quiz-assignments/:id
+    ```
+
+    | Parameters   | Description                                                                                                                                                                                                                                 |
+    |:-------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Get a quiz-assignment object with or without result & score, depends if the student is allowed to see the result & score of a quiz.<br/>Returns a quiz-assignment object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get a quiz-assignment (/w result & score):
+    ```http
+      GET /api/quiz-assignments/with-results/:id
+    ```
+
+    | Parameters   | Description                                                                                                                                                                                                                                |
+    |:-------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Get a quiz-assignment object with result & score, regardless if the student is allowed to see the result & score of a quiz or not.<br/>Returns a quiz-assignment object if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get quiz-assignments of a student (/w or /wo result & score):
+    ```http
+      GET /api/quiz-assignments/by-student/:studentId
+    ```
+
+    | Parameters   | Description                                                                                                                                                                                                                                                             |
+    |:-------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Get a list of quiz-assignment objects of a student with or without result & score, depends if the student is allowed to see the result & score of a quiz.<br/>Returns a list quiz-assignment objects if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Get quiz-assignments of a student (/w result & score):
+    ```http
+      GET /api/quiz-assignments/by-student-with-results/:studentId
+    ```
+
+    | Parameters   | Description                                                                                                                                                                                                                                                            |
+    |:-------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Get a list of quiz-assignment objects of a student with result & score, regardless if the student is allowed to see the result & score of a quiz or not.<br/>Returns a list quiz-assignment objects if a valid identifier was provided, and throws an error otherwise. |
+
+* #### Create a quiz-assignment:
+    ```http
+      POST /api/quiz-assignments/add
+    ```
+
+    | Parameters                | Description                                                                                                  |
+    |:--------------------------|:-------------------------------------------------------------------------------------------------------------|
+    | `quiz-assignment`: object | Returns a quiz-assignment object if a valid object was provided, and throws an error or exception otherwise. |
+
+* #### Save a selected answer:
+    ```http
+      POST /api/quiz-assignments/selected-answer/:quizAssignmentId-:answerValidationId
+    ```
+
+    | Parameters   | Description                                                                                                        |
+    |:-------------|:-------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns a quiz-assignment object if a valid identifiers were provided, and throws an error or exception otherwise. |
+
+* #### Close a quiz-assignment:
+    ```http
+      POST /api/quiz-assignments/close-quiz-assignment/:id
+    ```
+
+    | Parameters   | Description                                                                                                                                                                           |
+    |:-------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Closes & calculate the score of the quiz after passing the quiz.<br/>Returns a quiz-assignment object if a valid identifier was provided, and throws an error or exception otherwise. |
+
+* #### Delete a quiz-assignment:
+    ```http
+      DELETE /api/quiz-assignments/:id
+    ```
+
+    | Parameters   | Description                                                                                                         |
+    |:-------------|:--------------------------------------------------------------------------------------------------------------------|
+    | No parameter | Returns an object of the deleted quiz-assignment if a valid identifier was provided, and throws an error otherwise. |
