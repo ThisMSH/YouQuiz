@@ -85,7 +85,7 @@ public class QuizAssignmentController {
         );
     }
 
-    @PostMapping("/selected-answer/{quizAssignmentId}-{answerValidationId}")
+    @PostMapping("/selected-answer/{quizAssignmentId}/{answerValidationId}")
     public ResponseEntity<Object> saveSelectedAnswer(
         @PathVariable("answerValidationId") Long answerValidationId,
         @PathVariable("quizAssignmentId") Long quizAssignmentId

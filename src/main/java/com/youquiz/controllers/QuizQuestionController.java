@@ -20,7 +20,7 @@ public class QuizQuestionController {
         this.quizQuestionService = quizQuestionService;
     }
 
-    @GetMapping("/{quizId}-{questionId}")
+    @GetMapping("/{quizId}/{questionId}")
     public ResponseEntity<Object> getQuizQuestion(@PathVariable Long quizId, @PathVariable Long questionId) {
         QuizQuestionId key = new QuizQuestionId();
         key.setQuizId(quizId);
@@ -68,7 +68,7 @@ public class QuizQuestionController {
         );
     }
 
-    @DeleteMapping("/{quizId}-{questionId}")
+    @DeleteMapping("/{quizId}/{questionId}")
     public ResponseEntity<Object> deleteQuizQuestion(@PathVariable Long quizId, @PathVariable Long questionId) {
         QuizQuestionId key = new QuizQuestionId();
         key.setQuizId(quizId);

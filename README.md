@@ -125,7 +125,7 @@
   * ##### Get by question & answer IDs:
 
     ```http
-      GET /api/answers-assignment/fk/:questionId-:answerId
+      GET /api/answers-assignment/fk/:questionId/:answerId
     ```
     
     | Parameters   | Description                                                                                              |
@@ -173,7 +173,7 @@
 
   * ##### Delete by question & answer IDs:
     ```http
-      DELETE /api/answers-assignment/fk/:questionId-:answerId
+      DELETE /api/answers-assignment/fk/:questionId/:answerId
     ```
     
     | Parameters   | Description                                                                                                             |
@@ -612,7 +612,7 @@
 
 * #### Get a quiz-question:
     ```http
-      GET /api/quiz-questions/:quizId-:questionId
+      GET /api/quiz-questions/:quizId/:questionId
     ```
 
     | Parameters   | Description                                                                                         |
@@ -648,7 +648,7 @@
 
 * #### Delete a quiz-question:
     ```http
-      DELETE /api/quiz-questions/:quizId-:questionId
+      DELETE /api/quiz-questions/:quizId/:questionId
     ```
 
     | Parameters   | Description                                                                                                       |
@@ -671,41 +671,43 @@
     }
     ```
 
-* #### Get a quiz-assignment (/w or /wo result & score):
-    ```http
-      GET /api/quiz-assignments/:id
-    ```
+* #### Get a quiz-assignment:
+  * ##### Get with or without result & score:
+      ```http
+        GET /api/quiz-assignments/:id
+      ```
 
-    | Parameters   | Description                                                                                                                                                                                                                                 |
-    |:-------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | No parameter | Get a quiz-assignment object with or without result & score, depends if the student is allowed to see the result & score of a quiz.<br/>Returns a quiz-assignment object if a valid identifier was provided, and throws an error otherwise. |
+      | Parameters   | Description                                                                                                                                                                                                                                 |
+      |:-------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+      | No parameter | Get a quiz-assignment object with or without result & score, depends if the student is allowed to see the result & score of a quiz.<br/>Returns a quiz-assignment object if a valid identifier was provided, and throws an error otherwise. |
 
-* #### Get a quiz-assignment (/w result & score):
-    ```http
-      GET /api/quiz-assignments/with-results/:id
-    ```
+  * ##### Get with result & score:
+      ```http
+        GET /api/quiz-assignments/with-results/:id
+      ```
 
-    | Parameters   | Description                                                                                                                                                                                                                                |
-    |:-------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | No parameter | Get a quiz-assignment object with result & score, regardless if the student is allowed to see the result & score of a quiz or not.<br/>Returns a quiz-assignment object if a valid identifier was provided, and throws an error otherwise. |
+      | Parameters   | Description                                                                                                                                                                                                                                |
+      |:-------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+      | No parameter | Get a quiz-assignment object with result & score, regardless if the student is allowed to see the result & score of a quiz or not.<br/>Returns a quiz-assignment object if a valid identifier was provided, and throws an error otherwise. |
 
 * #### Get quiz-assignments of a student (/w or /wo result & score):
-    ```http
-      GET /api/quiz-assignments/by-student/:studentId
-    ```
+  * ##### Get with or without result & score:
+      ```http
+        GET /api/quiz-assignments/by-student/:studentId
+      ```
 
-    | Parameters   | Description                                                                                                                                                                                                                                                             |
-    |:-------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | No parameter | Get a list of quiz-assignment objects of a student with or without result & score, depends if the student is allowed to see the result & score of a quiz.<br/>Returns a list quiz-assignment objects if a valid identifier was provided, and throws an error otherwise. |
+      | Parameters   | Description                                                                                                                                                                                                                                                             |
+      |:-------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+      | No parameter | Get a list of quiz-assignment objects of a student with or without result & score, depends if the student is allowed to see the result & score of a quiz.<br/>Returns a list quiz-assignment objects if a valid identifier was provided, and throws an error otherwise. |
 
-* #### Get quiz-assignments of a student (/w result & score):
-    ```http
-      GET /api/quiz-assignments/by-student-with-results/:studentId
-    ```
+  * ##### Get with result & score:
+      ```http
+        GET /api/quiz-assignments/by-student-with-results/:studentId
+      ```
 
-    | Parameters   | Description                                                                                                                                                                                                                                                            |
-    |:-------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | No parameter | Get a list of quiz-assignment objects of a student with result & score, regardless if the student is allowed to see the result & score of a quiz or not.<br/>Returns a list quiz-assignment objects if a valid identifier was provided, and throws an error otherwise. |
+      | Parameters   | Description                                                                                                                                                                                                                                                            |
+      |:-------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+      | No parameter | Get a list of quiz-assignment objects of a student with result & score, regardless if the student is allowed to see the result & score of a quiz or not.<br/>Returns a list quiz-assignment objects if a valid identifier was provided, and throws an error otherwise. |
 
 * #### Create a quiz-assignment:
     ```http
@@ -718,7 +720,7 @@
 
 * #### Save a selected answer:
     ```http
-      POST /api/quiz-assignments/selected-answer/:quizAssignmentId-:answerValidationId
+      POST /api/quiz-assignments/selected-answer/:quizAssignmentId/:answerValidationId
     ```
 
     | Parameters   | Description                                                                                                        |

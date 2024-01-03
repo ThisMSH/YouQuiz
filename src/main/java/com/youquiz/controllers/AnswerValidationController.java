@@ -31,7 +31,7 @@ public class AnswerValidationController {
         );
     }
 
-    @GetMapping("/fk/{questionId}-{answerId}")
+    @GetMapping("/fk/{questionId}/{answerId}")
     public ResponseEntity<Object> getAssignedAnswerByFK(@PathVariable Long questionId, @PathVariable Long answerId) {
         AnswerValidationDTO av = avService.get(questionId, answerId);
 
@@ -86,7 +86,7 @@ public class AnswerValidationController {
         );
     }
 
-    @DeleteMapping("/fk/{questionId}-{answerId}")
+    @DeleteMapping("/fk/{questionId}/{answerId}")
     public ResponseEntity<Object> deleteAnswerValidation(@PathVariable Long questionId, @PathVariable Long answerId) {
         AnswerValidationDTO av = avService.delete(questionId, answerId);
 
