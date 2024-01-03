@@ -106,6 +106,18 @@ public class Beans {
                 );
             });
 
+        modelMapper.typeMap(QuizAssignmentRequestDTO.class, QuizAssignment.class)
+            .addMappings(mapper -> {
+                mapper.map(
+                    QuizAssignmentRequestDTO::getStudentId,
+                    (dest, id) -> dest.getStudent().setId((Long) id)
+                );
+                mapper.map(
+                    QuizAssignmentRequestDTO::getQuizId,
+                    (dest, id) -> dest.getQuiz().setId((Long) id)
+                );
+            });
+
 /*
         modelMapper.typeMap(Subject.class, SubjectNoParentDTO.class)
             .addMappings(mapper -> {
