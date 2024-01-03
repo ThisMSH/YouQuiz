@@ -3,9 +3,11 @@ package com.youquiz.services;
 import com.youquiz.dto.requestdto.AnswerValidationRequestDTO;
 import com.youquiz.dto.responsedto.AnswerValidationDTO;
 import com.youquiz.entities.AnswerValidation;
+import com.youquiz.entities.Question;
 import com.youquiz.enums.QuestionType;
 import com.youquiz.exceptions.ResourceBadRequestException;
 import com.youquiz.exceptions.ResourceNotFoundException;
+import com.youquiz.exceptions.ResourceUnprocessableException;
 import com.youquiz.repositories.AnswerRepository;
 import com.youquiz.repositories.AnswerValidationRepository;
 import com.youquiz.repositories.QuestionRepository;
@@ -37,9 +39,8 @@ public class AnswerValidationService implements IAnswerValidationService {
 
     @Override
     public AnswerValidationDTO create(AnswerValidationRequestDTO request) {
-        if (!questionRepository.existsById(request.getQuestionId())) {
-            throw new ResourceNotFoundException("The question does not exist.");
-        }
+        Question question = questionRepository.findById(request.getQuestionId())
+            .orElseThrow(() -> new ResourceNotFoundException("The question does not exist."));
 
         if (!answerRepository.existsById(request.getAnswerId())) {
             throw new ResourceNotFoundException("The answer does not exist.");
@@ -57,6 +58,17 @@ public class AnswerValidationService implements IAnswerValidationService {
                     throw new ResourceBadRequestException("Questions of type \"Single\" don't accept more than one correct answer.");
                 }
             }
+        }
+
+        double points = question.getAnswerValidations().stream()
+            .mapToDouble(AnswerValidation::getPoints).sum();
+
+        if (points == question.getLevel().getMaxPoints()) {
+            throw new ResourceUnprocessableException("The maximum number of points for this question has already been reached.");
+        } else if (points + request.getPoints() > question.getLevel().getMaxPoints()) {
+            throw new ResourceUnprocessableException(
+                "The maximum number of points for this question will be exceeded.\nMax points for this question: " + question.getLevel().getMaxPoints() + "\nCurrent points for this question: " + points + "\nPoints to be added: " + request.getPoints() + "\nNew total points for this question: " + (points + request.getPoints()));
+
         }
 
         AnswerValidation av = modelMapper.map(request, AnswerValidation.class);

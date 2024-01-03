@@ -2,10 +2,13 @@ package com.youquiz.services;
 
 import com.youquiz.dto.requestdto.QuizQuestionRequestDTO;
 import com.youquiz.dto.responsedto.QuizQuestionDTO;
+import com.youquiz.entities.AnswerValidation;
+import com.youquiz.entities.Question;
 import com.youquiz.entities.QuizQuestion;
 import com.youquiz.entities.embeddableid.QuizQuestionId;
 import com.youquiz.exceptions.ResourceAlreadyExistsException;
 import com.youquiz.exceptions.ResourceNotFoundException;
+import com.youquiz.exceptions.ResourceUnprocessableException;
 import com.youquiz.repositories.QuestionRepository;
 import com.youquiz.repositories.QuizQuestionRepository;
 import com.youquiz.repositories.QuizRepository;
@@ -42,16 +45,22 @@ public class QuizQuestionService implements IQuizQuestionService {
         key.setQuizId(request.getQuizId());
         key.setQuestionId(request.getQuestionId());
 
+        Question question = questionRepository.findById(request.getQuestionId())
+            .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
+
         if (!quizRepository.existsById(request.getQuizId())) {
             throw new ResourceNotFoundException("Quiz not found.");
         }
 
-        if (!questionRepository.existsById(request.getQuestionId())) {
-            throw new ResourceNotFoundException("Question not found.");
-        }
-
         if (quizQuestionRepository.existsById(key)) {
             throw new ResourceAlreadyExistsException("The question is already assigned to this quiz.");
+        }
+
+        double points = question.getAnswerValidations().stream()
+            .mapToDouble(AnswerValidation::getPoints).sum();
+
+        if (points < question.getLevel().getMinPoints()) {
+            throw new ResourceUnprocessableException("This question still didn't reach the minimum points required for its level.\nCurrent points for this question: " + points + "\nMinimum points required: " + question.getLevel().getMinPoints());
         }
 
         QuizQuestion qq = modelMapper.map(request, QuizQuestion.class);
