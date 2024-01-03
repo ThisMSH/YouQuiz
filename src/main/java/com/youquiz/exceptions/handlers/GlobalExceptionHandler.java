@@ -3,6 +3,7 @@ package com.youquiz.exceptions.handlers;
 import com.youquiz.utils.ResponseHandler;
 import jakarta.validation.ConstraintViolationException;
 import org.modelmapper.MappingException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +36,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
         return ResponseHandler.exception(e, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        RuntimeException ex = new DataIntegrityViolationException("The object that you're trying to delete is assigned to another object.", e);
+        return ResponseHandler.exception(ex, HttpStatus.CONFLICT);
     }
 }
