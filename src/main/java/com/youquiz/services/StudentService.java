@@ -1,7 +1,9 @@
 package com.youquiz.services;
 
 import com.youquiz.dto.requestdto.StudentRequestDTO;
+import com.youquiz.dto.responsedto.QuizAssignmentDTO;
 import com.youquiz.dto.responsedto.StudentDTO;
+import com.youquiz.entities.QuizAssignment;
 import com.youquiz.entities.Student;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.StudentRepository;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -64,7 +67,18 @@ public class StudentService implements IStudentService {
         Student student = studentRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Student not found."));
 
-        return modelMapper.map(student, StudentDTO.class);
+        StudentDTO studentDto = modelMapper.map(student, StudentDTO.class);
+
+        List<QuizAssignment> quizAssignments = student.getQuizAssignments();
+
+        if (!quizAssignments.isEmpty()) {
+            List<QuizAssignmentDTO> quizAssignmentsDto = quizAssignments.stream()
+                .map(qa -> modelMapper.map(qa, QuizAssignmentDTO.class))
+                .toList();
+            studentDto.setQuizAssignments(quizAssignmentsDto);
+        }
+
+        return studentDto;
     }
 
     @Override

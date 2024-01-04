@@ -665,7 +665,6 @@
         "reason": "Margaret",
         "startingTime": "2023-12-14 18:45:00.000",
         "endingTime": "2023-12-14 23:45:00.000",
-        "passResult": 80.5, // Minimum score to pass the result
         "studentId": 4,
         "quizId": 32
     }

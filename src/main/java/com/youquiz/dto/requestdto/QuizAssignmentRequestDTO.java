@@ -29,10 +29,6 @@ public class QuizAssignmentRequestDTO {
 
     private Double score = 0.0;
 
-    @NotNull(message = "Passing score is required.")
-    @Positive(message = "Passing score must be positive.")
-    private Double passResult;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

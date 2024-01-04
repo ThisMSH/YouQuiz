@@ -116,7 +116,7 @@ public class QuizQuestionService implements IQuizQuestionService {
             throw new ResourceNotFoundException("Quiz not found.");
         }
 
-        List<QuizQuestion> qqs = quizQuestionRepository.findAllByQuestionId(quizId);
+        List<QuizQuestion> qqs = quizQuestionRepository.findAllByQuizId(quizId);
 
         return qqs.stream().map(qq -> modelMapper.map(qq, QuizQuestionDTO.class)).toList();
     }

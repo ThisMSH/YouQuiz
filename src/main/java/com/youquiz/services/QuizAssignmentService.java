@@ -97,8 +97,7 @@ public class QuizAssignmentService implements IQuizAssignmentService {
             .orElseThrow(() -> new ResourceNotFoundException("Quiz-assignment not found."));
 
         if (!quizAssignment.getQuiz().isCanSeeResult()) {
-            quizAssignment.setScore(0);
-            quizAssignment.setPassResult(0);
+            quizAssignment.setScore(null);
         }
 
         return modelMapper.map(quizAssignment, QuizAssignmentDTO.class);
@@ -143,10 +142,8 @@ public class QuizAssignmentService implements IQuizAssignmentService {
         quizAssignments = quizAssignments.stream().peek(
             quizAssignment -> {
                 if (!quizAssignment.getQuiz().isCanSeeResult()) {
-                    quizAssignment.setScore(0);
-                    quizAssignment.setPassResult(0);
+                    quizAssignment.setScore(null);
                 }
-
             }
         ).toList();
 
@@ -161,6 +158,10 @@ public class QuizAssignmentService implements IQuizAssignmentService {
             .orElseThrow(() -> new ResourceNotFoundException("Answer-validation not found."));
         QuizAssignment quizAssignment = quizAssignmentRepository.findById(quizAssignmentId)
             .orElseThrow(() -> new ResourceNotFoundException("Quiz-assignment not found."));
+
+        if (answerValidation.getQuizAssignments().contains(quizAssignment) && quizAssignment.getAnswerValidations().contains(answerValidation)) {
+            throw new ResourceUnprocessableException("You cannot save the same answer for the same question twice.");
+        }
 
         answerValidation.getQuizAssignments().add(quizAssignment);
         quizAssignment.getAnswerValidations().add(answerValidation);
@@ -204,8 +205,7 @@ public class QuizAssignmentService implements IQuizAssignmentService {
         quizAssignment = quizAssignmentRepository.save(quizAssignment);
 
         if (!quizAssignment.getQuiz().isCanSeeResult()) {
-            quizAssignment.setScore(0);
-            quizAssignment.setPassResult(0);
+            quizAssignment.setScore(null);
         }
 
         return modelMapper.map(quizAssignment, QuizAssignmentDTO.class);

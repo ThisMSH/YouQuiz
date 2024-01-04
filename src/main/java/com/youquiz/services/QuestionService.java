@@ -7,13 +7,11 @@ import com.youquiz.dto.requestdto.SubjectRequestDTO;
 import com.youquiz.dto.responsedto.AnswerValidationDTO;
 import com.youquiz.dto.responsedto.MediaDTO;
 import com.youquiz.dto.responsedto.QuestionDTO;
+import com.youquiz.dto.responsedto.QuizQuestionDTO;
 import com.youquiz.entities.*;
 import com.youquiz.enums.QuestionType;
 import com.youquiz.exceptions.ResourceNotFoundException;
-import com.youquiz.repositories.AnswerValidationRepository;
-import com.youquiz.repositories.LevelRepository;
-import com.youquiz.repositories.QuestionRepository;
-import com.youquiz.repositories.SubjectRepository;
+import com.youquiz.repositories.*;
 import com.youquiz.services.interfaces.IQuestionService;
 import com.youquiz.specifications.QuestionSpecification;
 import com.youquiz.utils.Utilities;
@@ -32,24 +30,24 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionService implements IQuestionService {
     private final QuestionRepository questionRepository;
-    private final ModelMapper modelMapper;
     private final LevelRepository levelRepository;
     private final SubjectRepository subjectRepository;
     private final AnswerValidationRepository avRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public QuestionService(
-        QuestionRepository questionRepository,
-        ModelMapper modelMapper,
-        LevelRepository levelRepository,
-        SubjectRepository subjectRepository,
-        AnswerValidationRepository avRepository
+            QuestionRepository questionRepository,
+            LevelRepository levelRepository,
+            SubjectRepository subjectRepository,
+            AnswerValidationRepository avRepository,
+            ModelMapper modelMapper
     ) {
         this.questionRepository = questionRepository;
-        this.modelMapper = modelMapper;
         this.levelRepository = levelRepository;
         this.subjectRepository = subjectRepository;
         this.avRepository = avRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -121,22 +119,23 @@ public class QuestionService implements IQuestionService {
         LevelRequestDTO lvl = q.getLevel();
         Level level = levelRepository.findById(question.getLevel().getId()).orElse(null);
         lvl.setQuestionIds(level != null && level.getQuestions() != null ? level.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
+        q.setLevel(lvl);
 
         SubjectRequestDTO subj = q.getSubject();
         Subject subject = subjectRepository.findById(question.getSubject().getId()).orElse(null);
         subj.setParentId(subject != null && subject.getParent() != null ? subject.getParent().getId() : null);
         subj.setChildrenIds(subject != null && subject.getChildren() != null ? subject.getChildren().stream().map(Subject::getId).collect(Collectors.toList()) : null);
         subj.setQuestionIds(subject != null && subject.getQuestions() != null ? subject.getQuestions().stream().map(Question::getId).collect(Collectors.toList()) : null);
+        q.setSubject(subj);
 
         List<Media> media = question.getMedias();
 
         if (!media.isEmpty()) {
             List<MediaDTO> mediaDto = media.stream().map(m -> modelMapper.map(m, MediaDTO.class)).toList();
-
             q.setMedias(mediaDto);
         }
 
-        List<AnswerValidation> av = avRepository.findAllByQuestionId(q.getId());
+        List<AnswerValidation> av = avRepository.findAllByQuestionId(id);
 
         if (!av.isEmpty()) {
             List<AnswerValidationDTO> avDto = new ArrayList<>();
@@ -150,8 +149,12 @@ public class QuestionService implements IQuestionService {
             q.setAnswerValidations(avDto);
         }
 
-        q.setLevel(lvl);
-        q.setSubject(subj);
+        List<QuizQuestion> qqs = question.getQuizQuestions();
+
+        if (!qqs.isEmpty()) {
+            List<QuizQuestionDTO> qqsDto = qqs.stream().map(qq -> modelMapper.map(qq, QuizQuestionDTO.class)).toList();
+            q.setQuizQuestions(qqsDto);
+        }
 
         return q;
     }

@@ -1,7 +1,9 @@
 package com.youquiz.services;
 
 import com.youquiz.dto.requestdto.TrainerRequestDTO;
+import com.youquiz.dto.responsedto.QuizDTO;
 import com.youquiz.dto.responsedto.TrainerDTO;
+import com.youquiz.entities.Quiz;
 import com.youquiz.entities.Trainer;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.TrainerRepository;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -64,7 +67,18 @@ public class TrainerService implements ITrainerService {
         Trainer trainer = trainerRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Trainer not found."));
 
-        return modelMapper.map(trainer, TrainerDTO.class);
+        TrainerDTO trainerDto = modelMapper.map(trainer, TrainerDTO.class);
+
+        List<Quiz> quizzes = trainer.getQuizzes();
+
+        if (!quizzes.isEmpty()) {
+            List<QuizDTO> quizzesDto = quizzes.stream()
+                .map(quiz -> modelMapper.map(quiz, QuizDTO.class))
+                .toList();
+            trainerDto.setQuizzes(quizzesDto);
+        }
+
+        return trainerDto;
     }
 
     @Override

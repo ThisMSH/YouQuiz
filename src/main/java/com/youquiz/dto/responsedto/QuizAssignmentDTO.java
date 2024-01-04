@@ -16,8 +16,7 @@ public class QuizAssignmentDTO {
     private LocalDateTime startingTime;
     private LocalDateTime endingTime;
     private short attempt;
-    private double score;
-    private double passResult;
+    private Double score;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private StudentRequestDTO student;

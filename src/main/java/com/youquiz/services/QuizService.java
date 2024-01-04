@@ -1,8 +1,14 @@
 package com.youquiz.services;
 
 import com.youquiz.dto.requestdto.QuizRequestDTO;
+import com.youquiz.dto.requestdto.TrainerRequestDTO;
+import com.youquiz.dto.responsedto.QuizAssignmentDTO;
 import com.youquiz.dto.responsedto.QuizDTO;
+import com.youquiz.dto.responsedto.QuizQuestionDTO;
+import com.youquiz.dto.responsedto.SubjectDTO;
 import com.youquiz.entities.Quiz;
+import com.youquiz.entities.QuizAssignment;
+import com.youquiz.entities.QuizQuestion;
 import com.youquiz.entities.Trainer;
 import com.youquiz.exceptions.ResourceNotFoundException;
 import com.youquiz.repositories.QuizRepository;
@@ -15,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -77,7 +84,35 @@ public class QuizService implements IQuizService {
         Quiz quiz = quizRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Quiz not found."));
 
-        return modelMapper.map(quiz, QuizDTO.class);
+        QuizDTO quizDto = modelMapper.map(quiz, QuizDTO.class);
+
+        TrainerRequestDTO trainer = modelMapper.map(quiz.getTrainer(), TrainerRequestDTO.class);
+        quizDto.setTrainer(trainer);
+
+        List<QuizQuestion> quizQuestions = quiz.getQuizQuestions();
+
+        if (!quizQuestions.isEmpty()) {
+            List<QuizQuestionDTO> quizQuestionsDto = quizQuestions.stream()
+                .map(qq -> modelMapper.map(qq, QuizQuestionDTO.class))
+                .toList();
+            quizDto.setQuizQuestions(quizQuestionsDto);
+
+            List<SubjectDTO> subjectsDto = quizQuestions.stream()
+                .map(qq -> modelMapper.map(qq.getQuestion().getSubject(), SubjectDTO.class))
+                .toList();
+            quizDto.setSubjects(subjectsDto);
+        }
+
+        List<QuizAssignment> quizAssignments = quiz.getQuizAssignments();
+
+        if (!quizAssignments.isEmpty()) {
+            List<QuizAssignmentDTO> quizAssignmentsDto = quizAssignments.stream()
+                .map(qa -> modelMapper.map(qa, QuizAssignmentDTO.class))
+                .toList();
+            quizDto.setQuizAssignments(quizAssignmentsDto);
+        }
+
+        return quizDto;
     }
 
     @Override

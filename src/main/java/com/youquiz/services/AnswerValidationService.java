@@ -63,12 +63,18 @@ public class AnswerValidationService implements IAnswerValidationService {
         double points = question.getAnswerValidations().stream()
             .mapToDouble(AnswerValidation::getPoints).sum();
 
-        if (points == question.getLevel().getMaxPoints()) {
-            throw new ResourceUnprocessableException("The maximum number of points for this question has already been reached.");
-        } else if (points + request.getPoints() > question.getLevel().getMaxPoints()) {
-            throw new ResourceUnprocessableException(
-                "The maximum number of points for this question will be exceeded.\nMax points for this question: " + question.getLevel().getMaxPoints() + "\nCurrent points for this question: " + points + "\nPoints to be added: " + request.getPoints() + "\nNew total points for this question: " + (points + request.getPoints()));
-
+        if (request.getPoints() > 0) {
+            if (points == question.getLevel().getMaxPoints()) {
+                throw new ResourceUnprocessableException("The maximum number of points for this question has already been reached.");
+            } else if (points + request.getPoints() > question.getLevel().getMaxPoints()) {
+                throw new ResourceUnprocessableException(
+                    "The maximum number of points for this question will be exceeded." +
+                        "\nMax points for this question: " + question.getLevel().getMaxPoints() +
+                        "\nCurrent points for this question: " + points +
+                        "\nPoints to be added: " + request.getPoints() +
+                        "\nNew total points for this question: " + (points + request.getPoints())
+                );
+            }
         }
 
         AnswerValidation av = modelMapper.map(request, AnswerValidation.class);

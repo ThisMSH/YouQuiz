@@ -24,4 +24,5 @@ public class QuizDTO {
     private TrainerRequestDTO trainer;
     private List<QuizAssignmentDTO> quizAssignments;
     private List<QuizQuestionDTO> quizQuestions;
+    private List<SubjectDTO> subjects;
 }

@@ -38,11 +38,7 @@ public class QuizAssignment {
     private short attempt = 0;
 
     @Column(nullable = false)
-    private double score = 0;
-
-    @NotNull(message = "Passing score is required.")
-    @Column(nullable = false)
-    private double passResult;
+    private Double score = 0.0;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
